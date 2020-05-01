@@ -27,7 +27,7 @@ public class AllUsersDao {
         try(Connection con = conncection.connect();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(getAllSQL)){
-            
+
             while (resultSet.next()){
                 String userIdStr = resultSet.getString("user_id");
                 UUID userId = UUID.fromString(userIdStr);
