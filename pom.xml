@@ -11,6 +11,8 @@
     <modules>
         <module>domain</module>
         <module>data</module>
+        <module>pres_javafx</module>
+        <module>pres_javafx</module>
     </modules>
 
     <properties>
