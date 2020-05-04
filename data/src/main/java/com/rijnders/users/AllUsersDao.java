@@ -15,7 +15,6 @@ public class AllUsersDao {
 
     private final ConnectionSetup conncection;
     private final ResultToUserConvertor resultToUserConvertor;
-    private final String getAllSQL = "SELECT * FROM \"user\";";
 
     public AllUsersDao() {
         this.conncection = new PostgresConnectionSetup();
@@ -24,6 +23,7 @@ public class AllUsersDao {
 
     public List<User> selectAllUsers(){
         List<User> toReturn = new ArrayList<>();
+        String getAllSQL = "SELECT * FROM \"user\";";
         try(Connection con = conncection.connect();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(getAllSQL)){

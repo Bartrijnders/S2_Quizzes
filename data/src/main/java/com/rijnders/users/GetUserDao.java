@@ -34,6 +34,7 @@ public class GetUserDao {
             PreparedStatement pstmt = connection.prepareStatement(sql)){
             pstmt.setString(1, username);
             ResultSet resultSet = pstmt.executeQuery();
+            if(resultSet.next())
             output = resultToUserConvertor.convert(resultSet);
         }
         catch (SQLException e){
@@ -58,6 +59,26 @@ public class GetUserDao {
             while (resultSet.next()){
                 output.add(resultToUserConvertor.convert(resultSet));
             }
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return output;
+    }
+
+    public User selectUserByEmail(String email){
+        User output = null;
+
+        String sql = "SELECT * " +
+                "FROM \"user\" " +
+                "WHERE email = ?";
+
+        try(Connection connection = connectionSetup.connect();
+            PreparedStatement pstmt = connection.prepareStatement(sql)){
+            pstmt.setString(1, email);
+            ResultSet resultSet = pstmt.executeQuery();
+            if(resultSet.next())
+            output = resultToUserConvertor.convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());
