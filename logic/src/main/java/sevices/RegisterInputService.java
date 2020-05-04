@@ -1,8 +1,8 @@
 package sevices;
 
-import messages.RegisteryCheckMessage;
 import com.rijnders.entityinterfaces.User;
 import com.rijnders.users.GetUserDao;
+import messages.RegisteryCheckMessage;
 
 import java.util.List;
 
@@ -19,25 +19,15 @@ public class RegisterInputService {
         boolean username_unique;
         boolean email_unique;
 
-        if(foundUsers.stream()
+        username_unique = foundUsers != null && foundUsers.stream()
                 .filter(e -> e.getUserName().toUpperCase() == username.toUpperCase())
                 .findFirst()
-                .orElse(null) == null){
-            username_unique = true;
-        }
-        else{
-            username_unique = false;
-        }
-        if(foundUsers.stream()
+                .orElse(null) == null;
+        email_unique = foundUsers != null && foundUsers.stream()
                 .filter(e -> e.getEmail().toUpperCase() == email.toUpperCase())
                 .findFirst()
-                .orElse(null) == null){
-            email_unique = true;
-        }
-        else{
-            email_unique = false;
-        }
+                .orElse(null) == null;
 
-        return new RegisteryCheckMessage(username_unique, email_unique);
+        return new RegisteryCheckMessage(!username_unique, !email_unique);
     }
 }

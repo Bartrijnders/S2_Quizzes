@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetUserDao {
@@ -42,7 +43,7 @@ public class GetUserDao {
     }
 
     public List<User> selectUsersByUsername_Email (String username, String email){
-        List<User> output = null;
+        List<User> output = new ArrayList<>();
 
         String sql = "SELECT * " +
                 "FROM \"user\" " +

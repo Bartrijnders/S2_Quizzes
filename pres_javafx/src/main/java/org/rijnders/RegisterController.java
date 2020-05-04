@@ -1,10 +1,10 @@
 package org.rijnders;
 
-import javafx.scene.control.Alert;
-import messages.RegisteryCheckMessage;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import messages.RegisteryCheckMessage;
 import sevices.RegisterService;
 
 import java.io.IOException;
@@ -12,10 +12,10 @@ import java.io.IOException;
 public class RegisterController {
 
     private final RegisterService registerService;
-    @FXML private TextField username_txtfield;
-    @FXML private TextField email_txtfield;
-    @FXML private PasswordField password_passfield;
-    @FXML private PasswordField repassword_passfield;
+    @FXML public TextField username_txtfield;
+    @FXML public TextField email_txtfield;
+    @FXML public PasswordField password_passfield;
+    @FXML public PasswordField repassword_passfield;
 
     public RegisterController() {
         this.registerService = new RegisterService();
@@ -35,17 +35,20 @@ public class RegisterController {
             username_txtfield.setStyle("-fx-text-fill: red; -fx-border-color: red");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Username and email already in use. chose another one.");
+            alert.show();
         }
 
-        if(!result.getEmailIsUnique()){
+        else if(!result.getEmailIsUnique()){
             email_txtfield.setStyle("-fx-text-fill: red; -fx-border-color: red");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Email already in use. chose another one.");
+            alert.show();
         }
-        if(!result.getUsernameIsUnique()){
+        else if(!result.getUsernameIsUnique()){
             username_txtfield.setStyle("-fx-text-fill: red; -fx-border-color: red");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Username already in use. chose another one.");
+            alert.show();
         }
     }
 }
