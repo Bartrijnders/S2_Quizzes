@@ -18,6 +18,7 @@
         <module>pres_javafx</module>
         <module>pres_javafx</module>
         <module>pres_javafx</module>
+        <module>logic</module>
     </modules>
 
     <properties>

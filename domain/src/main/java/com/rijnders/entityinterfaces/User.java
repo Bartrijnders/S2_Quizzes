@@ -1,6 +1,11 @@
 package com.rijnders.entityinterfaces;
 
+import java.util.UUID;
+
 public interface User {
+
+    UUID getUserId();
+
     String getUserName();
 
     String getEmail();

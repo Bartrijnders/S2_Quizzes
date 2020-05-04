@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class PostgresConnectionSetup implements ConncectionSetup {
+public class PostgresConnectionSetup implements ConnectionSetup {
 
     private ConnectionValues connectionValues;
 
