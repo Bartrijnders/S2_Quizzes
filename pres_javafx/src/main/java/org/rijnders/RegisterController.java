@@ -26,6 +26,11 @@ public class RegisterController {
         App.setRoot("login");
     }
 
+    public void checkInput(){
+
+    }
+
+    @FXML
     public void confirmBtnClick(){
         //TODO content check.
         RegisteryCheckMessage result = registerService.register(username_txtfield.getText(), email_txtfield.getText(), password_passfield.getText());

@@ -42,7 +42,7 @@
             </PasswordField>
             <GridPane prefHeight="180.0" prefWidth="600.0">
                <children>
-                  <Button fx:id="confirm_btn" mnemonicParsing="false" prefHeight="27.0" prefWidth="241.0" text="Confirm" GridPane.columnIndex="1" onAction="#confirmBtnClick">
+                  <Button fx:id="confirm_btn" defaultButton="true" disable="true" mnemonicParsing="false" onAction="#confirmBtnClick" prefHeight="27.0" prefWidth="241.0" text="Confirm" GridPane.columnIndex="1">
                      <padding>
                         <Insets bottom="20.0" top="20.0" />
                      </padding>
@@ -50,7 +50,7 @@
                         <Insets left="10.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="cancel_btn" layoutX="320.0" layoutY="8.0" mnemonicParsing="false" onAction="#cancelBtnClick" prefHeight="27.0" prefWidth="241.0" text="Cancel" GridPane.halignment="RIGHT">
+                  <Button fx:id="cancel_btn" cancelButton="true" layoutX="320.0" layoutY="8.0" mnemonicParsing="false" onAction="#cancelBtnClick" prefHeight="27.0" prefWidth="241.0" text="Cancel" GridPane.halignment="RIGHT">
                      <padding>
                         <Insets bottom="20.0" top="20.0" />
                      </padding>
