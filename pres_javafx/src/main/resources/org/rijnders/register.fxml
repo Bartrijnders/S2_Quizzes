@@ -17,25 +17,25 @@
                </VBox.margin>
             </Text>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" />
-            <TextField fx:id="username_txtfield" promptText="Username">
+            <TextField fx:id="usernameTxt" promptText="Username">
                <VBox.margin>
                   <Insets bottom="10.0" left="40.0" right="40.0" />
                </VBox.margin>
             </TextField>
             <Text layoutX="280.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
-            <TextField fx:id="email_txtfield" layoutX="50.0" layoutY="83.0" promptText="Email">
+            <TextField fx:id="emailTxt" layoutX="50.0" layoutY="83.0" promptText="Email">
                <VBox.margin>
                   <Insets bottom="10.0" left="40.0" right="40.0" />
                </VBox.margin>
             </TextField>
             <Text layoutX="294.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
-            <PasswordField fx:id="password_passfield" promptText="password">
+            <PasswordField fx:id="passwordTxt" promptText="password">
                <VBox.margin>
                   <Insets bottom="10.0" left="40.0" right="40.0" />
                </VBox.margin>
             </PasswordField>
             <Text layoutX="282.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="re-enter  Password:" />
-            <PasswordField fx:id="repassword_passfield" layoutX="50.0" layoutY="157.0" promptText="re-enter password">
+            <PasswordField fx:id="repasswordPswdF" layoutX="50.0" layoutY="157.0" promptText="re-enter password">
                <VBox.margin>
                   <Insets bottom="10.0" left="40.0" right="40.0" />
                </VBox.margin>

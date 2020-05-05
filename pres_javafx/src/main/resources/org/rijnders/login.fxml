@@ -27,11 +27,11 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </VBox.margin>
             </Text>
-            <TextField fx:id="email_txtfield" prefHeight="27.0" prefWidth="492.0" promptText="email e.g. user@gmail.com">
+            <TextField fx:id="emailTxtF" prefHeight="27.0" prefWidth="492.0" promptText="email e.g. user@gmail.com">
                <VBox.margin>
                   <Insets left="60.0" right="60.0" top="20.0" />
                </VBox.margin></TextField>
-            <PasswordField fx:id="password_pswrdField" promptText="password">
+            <PasswordField fx:id="passwordPswrdF" promptText="password">
                <VBox.margin>
                   <Insets bottom="60.0" left="60.0" right="60.0" top="20.0" />
                </VBox.margin>
