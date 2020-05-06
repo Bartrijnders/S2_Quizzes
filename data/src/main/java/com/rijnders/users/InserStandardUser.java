@@ -19,7 +19,7 @@ public class InserStandardUser implements UserInsertable {
     }
 
     public int insert(User user){
-        String sql = "INSERT INTO \"user\"(user_id, user_name, email, password) " +
+        String sql = "INSERT INTO \"user\"(id, username, email, password) " +
                 "values (?,?,?,?)";
 
         int result = 0;

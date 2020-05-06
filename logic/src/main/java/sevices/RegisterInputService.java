@@ -28,6 +28,6 @@ public class RegisterInputService {
                 .findFirst()
                 .orElse(null) == null;
 
-        return new RegisteryCheckMessage(!username_unique, !email_unique);
+        return new RegisteryCheckMessage(username_unique, email_unique);
     }
 }

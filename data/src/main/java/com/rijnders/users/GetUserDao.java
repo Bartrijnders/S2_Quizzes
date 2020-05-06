@@ -28,7 +28,7 @@ public class GetUserDao {
 
         String sql = "SELECT * " +
                 "FROM \"user\" " +
-                "WHERE user_name = ?";
+                "WHERE username = ?";
 
         try(Connection connection = connectionSetup.connect();
             PreparedStatement pstmt = connection.prepareStatement(sql)){
@@ -48,7 +48,7 @@ public class GetUserDao {
 
         String sql = "SELECT * " +
                 "FROM \"user\" " +
-                "WHERE user_name = ?" +
+                "WHERE username = ?" +
                 "OR email = ?";
 
         try(Connection connection = connectionSetup.connect();
