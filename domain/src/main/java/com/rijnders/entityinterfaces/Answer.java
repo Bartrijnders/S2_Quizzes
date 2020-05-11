@@ -1,5 +1,7 @@
 package com.rijnders.entityinterfaces;
 
+import java.util.UUID;
+
 public interface Answer {
     String getAnswerLine();
 
@@ -8,4 +10,6 @@ public interface Answer {
     boolean isCorrect();
 
     void setCorrect(boolean correct);
+
+    UUID getId();
 }

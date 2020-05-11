@@ -24,9 +24,9 @@ public class InserStandardUser implements UserInsertable {
 
         int result = 0;
 
-        try(Connection connection = connectionSetup.connect();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql,
-                    Statement.RETURN_GENERATED_KEYS)) {
+            try(Connection connection = connectionSetup.connect();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setObject(1, user.getUserId());
             preparedStatement.setString(2, user.getUserName());
