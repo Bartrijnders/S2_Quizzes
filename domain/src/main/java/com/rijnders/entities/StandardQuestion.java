@@ -1,13 +1,21 @@
 package com.rijnders.entities;
 
+import java.util.UUID;
+
 public abstract class StandardQuestion {
 
     private String questionLine;
-    private int number;
+    private QuestionType type;
+    private UUID id;
 
-    public StandardQuestion(String questionLine, int number) {
+    public StandardQuestion(String questionLine, UUID id) {
         this.questionLine = questionLine;
-        this.number = number;
+        this.id = id;
+    }
+
+    public StandardQuestion(String questionLine) {
+        this.questionLine = questionLine;
+        this.id = UUID.randomUUID();
     }
 
     public String getQuestionLine() {
@@ -18,11 +26,15 @@ public abstract class StandardQuestion {
         this.questionLine = questionLine;
     }
 
-    public int getNumber() {
-        return number;
+    public UUID getId() {
+        return id;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
     }
 }

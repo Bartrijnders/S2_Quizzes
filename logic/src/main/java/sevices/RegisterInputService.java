@@ -1,21 +1,21 @@
 package sevices;
 
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.users.GetUserDao;
+import com.rijnders.users.SelectUserDao;
 import messages.RegisteryCheckMessage;
 
 import java.util.List;
 
 public class RegisterInputService {
 
-    private final GetUserDao getUserDao;
+    private final SelectUserDao selectUserDao;
 
     public RegisterInputService() {
-        this.getUserDao = new GetUserDao();
+        this.selectUserDao = new SelectUserDao();
     }
 
     public RegisteryCheckMessage checkInput(String username, String email){
-        List<User> foundUsers = getUserDao.selectUsersByUsername_Email(username,email);
+        List<User> foundUsers = selectUserDao.selectUsersByUsername_Email(username,email);
         boolean username_unique;
         boolean email_unique;
 

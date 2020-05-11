@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import sevices.ActiveUserService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -16,7 +17,7 @@ public class HomeController implements Initializable {
     private User activeUser = activeUserService.getUser();
 
     @FXML public Text welcomeTxt;
-    @FXML public Button myQuestionnairBtn;
+    @FXML public Button myQuestionnaireBtn;
     @FXML public Button playQuizBtn;
 
     @Override
@@ -28,11 +29,17 @@ public class HomeController implements Initializable {
         welcomeTxt.setText("Welcome " + activeUser.getUserName());
     }
 
-    private void setMyQuestionnairBtnClick(){
+    @FXML
+    public void setMyQuestionnaireBtnClick(){
+        try{
+            App.setRoot("questionnaireHome");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private void setPlayQuizBtnClick(){
+    public void setPlayQuizBtnClick(){
 
     }
 

@@ -11,7 +11,7 @@ public class ResultToStandardUserConvertor implements ResultToUserConvertor {
 
     @Override
     public User convert(ResultSet resultSet) throws SQLException {
-        String userIdStr = resultSet.getString("id");
+        String userIdStr = resultSet.getString("userid");
         UUID userId = UUID.fromString(userIdStr);
         String userName = resultSet.getString("username");
         String email = resultSet.getString("email");

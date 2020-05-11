@@ -1,17 +1,17 @@
 package sevices;
 
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.users.GetUserDao;
+import com.rijnders.users.SelectUserDao;
 
 public class LoginService {
 
-    private final GetUserDao getUserDao;
+    private final SelectUserDao selectUserDao;
 
     public LoginService() {
-        getUserDao = new GetUserDao();
+        selectUserDao = new SelectUserDao();
     }
     public User loginWithEmail(String email, String password){
-        User comp = getUserDao.selectUserByEmail(email);
+        User comp = selectUserDao.selectUserByEmail(email);
         if(comp != null && comp.getPassword().equals(password)){
             return comp;
         }

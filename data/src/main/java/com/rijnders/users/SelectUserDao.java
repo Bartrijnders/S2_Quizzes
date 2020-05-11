@@ -11,12 +11,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetUserDao {
+public class SelectUserDao {
 
     private final ConnectionSetup connectionSetup;
     private final ResultToUserConvertor resultToUserConvertor;
 
-    public GetUserDao() {
+    public SelectUserDao() {
         this.connectionSetup = new PostgresConnectionSetup();
         this.resultToUserConvertor = new ResultToStandardUserConvertor();
     }

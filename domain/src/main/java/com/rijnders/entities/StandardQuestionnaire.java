@@ -7,21 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class StandardQuestionnair implements Questionnair {
+public class StandardQuestionnaire implements Questionnair {
 
     private final UUID id;
     private String name;
     private List<StandardQuestion> questions;
     private final User author;
 
-    public StandardQuestionnair(UUID id, String name, List<StandardQuestion> questions, User author) {
+    public StandardQuestionnaire(UUID id, String name, List<StandardQuestion> questions, User author) {
         this.id = id;
         this.name = name;
         this.questions = questions;
         this.author = author;
     }
 
-    public StandardQuestionnair(String name, User author) {
+    public StandardQuestionnaire(UUID id, String name, User author) {
+        this.id = id;
+        this.name = name;
+        this.author = author;
+    }
+
+    public StandardQuestionnaire(String name, User author) {
         this.name = name;
         this.author = author;
         this.questions = new ArrayList<>();
