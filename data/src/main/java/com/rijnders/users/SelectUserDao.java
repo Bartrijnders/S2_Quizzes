@@ -2,6 +2,7 @@ package com.rijnders.users;
 
 import com.rijnders.dbconnection.ConnectionSetup;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
+import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.util.List;
 public class SelectUserDao {
 
     private final ConnectionSetup connectionSetup;
-    private final ResultToUserConvertor resultToUserConvertor;
+    private final ResultConvertor resultToUserConvertor;
 
     public SelectUserDao() {
         this.connectionSetup = new PostgresConnectionSetup();
@@ -35,7 +36,7 @@ public class SelectUserDao {
             pstmt.setString(1, username);
             ResultSet resultSet = pstmt.executeQuery();
             if(resultSet.next())
-            output = resultToUserConvertor.convert(resultSet);
+            output = (StandardUser) resultToUserConvertor.convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());
@@ -57,7 +58,7 @@ public class SelectUserDao {
             pstmt.setString(2, email);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()){
-                output.add(resultToUserConvertor.convert(resultSet));
+                output.add((User) resultToUserConvertor.convert(resultSet));
             }
         }
         catch (SQLException e){
@@ -78,7 +79,7 @@ public class SelectUserDao {
             pstmt.setString(1, email);
             ResultSet resultSet = pstmt.executeQuery();
             if(resultSet.next())
-            output = resultToUserConvertor.convert(resultSet);
+            output =(User) resultToUserConvertor.convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());

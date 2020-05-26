@@ -2,6 +2,7 @@ package com.rijnders.users;
 
 import com.rijnders.dbconnection.ConnectionSetup;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
+import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AllUsersDao {
 
     private final ConnectionSetup conncection;
-    private final ResultToUserConvertor resultToUserConvertor;
+    private final ResultConvertor resultToUserConvertor;
 
     public AllUsersDao() {
         this.conncection = new PostgresConnectionSetup();
@@ -29,7 +30,7 @@ public class AllUsersDao {
             ResultSet resultSet = statement.executeQuery(getAllSQL)){
 
             while (resultSet.next()){
-                toReturn.add(resultToUserConvertor.convert(resultSet));
+                toReturn.add((StandardUser)resultToUserConvertor.convert(resultSet));
             }
         }
         catch (SQLException e){

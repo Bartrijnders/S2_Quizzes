@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class ResultToStandardUserConvertor implements ResultToUserConvertor {
+public class ResultToStandardUserConvertor implements ResultConvertor<User> {
 
     @Override
     public User convert(ResultSet resultSet) throws SQLException {
