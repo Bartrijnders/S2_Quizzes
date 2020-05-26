@@ -3,8 +3,9 @@ package com.rijnders.dao;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.users.ResultConvertor;
-import com.rijnders.users.ResultToStandardUserConvertor;
+import com.rijnders.resultconvertors.ResultConvertor;
+import com.rijnders.resultconvertors.ResultToAnswerConvertor;
+import com.rijnders.resultconvertors.ResultToStandardUserConvertor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,11 +19,9 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
     private static UserDao userDaoInstance;
     private Connection connection;
-    private ResultConvertor resultConvertor;
 
     private UserDao() {
         this.connection = new PostgresConnectionSetup().connect();
-        this.resultConvertor = new ResultToStandardUserConvertor();
     }
 
     public static UserDao getInstance() {
@@ -44,7 +43,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
         pstmt.setString(1, id.toString());
         ResultSet resultSet = pstmt.executeQuery();
         if (resultSet.next())
-            output = (User) resultConvertor.convert(resultSet);
+            output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
 
         connection.close();
         return output;
@@ -60,7 +59,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
-            output.add((User) resultConvertor.convert(resultSet));
+            output.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
         }
         connection.close();
         return output;
@@ -122,7 +121,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
             pstmt.setString(1, email);
             ResultSet resultSet = pstmt.executeQuery();
             if(resultSet.next())
-                output = (StandardUser) resultConvertor.convert(resultSet);
+                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());

@@ -4,6 +4,8 @@ import com.rijnders.dbconnection.ConnectionSetup;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
+import com.rijnders.resultconvertors.ResultConvertor;
+import com.rijnders.resultconvertors.ResultToStandardUserConvertor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

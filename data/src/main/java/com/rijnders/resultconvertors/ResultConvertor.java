@@ -1,4 +1,4 @@
-package com.rijnders.users;
+package com.rijnders.resultconvertors;
 
 import com.rijnders.entityinterfaces.User;
 
