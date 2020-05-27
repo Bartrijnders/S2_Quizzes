@@ -1,5 +1,6 @@
 package com.rijnders.dao;
 
+import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entityinterfaces.Answer;
 import com.rijnders.resultconvertors.ResultToAnswerConvertor;
@@ -14,106 +15,131 @@ import java.util.UUID;
 
 public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
 
-    private static AnswerDao answerDaoInstance;
     private final Connection connection;
+    private PreparedStatement preparedStatement;
+    private ResultSet resultSet;
+    private String selectEverything = "SELECT * ";
 
-    private AnswerDao() {
+    public AnswerDao() {
         connection = new PostgresConnectionSetup().connect();
     }
 
-    public static AnswerDao getInstance() {
-        if (answerDaoInstance == null) {
-            answerDaoInstance = new AnswerDao();
-        }
-        return answerDaoInstance;
-    }
+
 
     @Override
     public Answer get(UUID id) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql = "" +
-                "SELECT * " +
-                "FROM answer " +
-                "WHERE answerid = ?;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        connection.commit();
-        if(resultSet.next())
-        return ResultToAnswerConvertor.getInstance().convert(resultSet);
-        else
-            return null;
+        try{
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    selectEverything +
+                    "FROM answer " +
+                    "WHERE answerid = ?;";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, id);
+            resultSet = preparedStatement.executeQuery();
+            connection.commit();
+            if(resultSet.next())
+                return ResultToAnswerConvertor.getInstance().convert(resultSet);
+            else
+                return null;
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
     public List<Answer> getAll() throws SQLException {
-        List<Answer> answers = new ArrayList<>();
-        connection.setAutoCommit(false);
-        String sql = "" +
-                "SELECT * " +
-                "FROM answer;";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        connection.commit();
-        while(resultSet.next()) {
-            answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+        try{
+            List<Answer> answers = new ArrayList<>();
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    selectEverything +
+                    "FROM answer;";
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            connection.commit();
+            while(resultSet.next()) {
+                answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+            }
+            return answers;
         }
-        return answers;
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
     public void save(Answer answer) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql = "" +
-                "INSERT INTO answer (answerid, answerline, iscorrect, questionid) " +
-                "VALUES (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, answer.getId());
-        preparedStatement.setString(2, answer.getAnswerLine());
-        preparedStatement.setBoolean(3, answer.isCorrect());
-        preparedStatement.setObject(4, answer.getQuestionId() );
-        preparedStatement.executeQuery();
-
-
+        try{
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    "INSERT INTO answer (answerid, answerline, iscorrect, questionid) " +
+                    "VALUES (?, ?, ?, ?)";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, answer.getId());
+            preparedStatement.setString(2, answer.getAnswerLine());
+            preparedStatement.setBoolean(3, answer.isCorrect());
+            preparedStatement.setObject(4, answer.getQuestionId() );
+            preparedStatement.executeQuery();
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
     public void update(Answer answer) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql ="UPDATE answer SET answerline = ?, iscorrect = ? WHERE answerid = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, answer.getAnswerLine());
-        preparedStatement.setBoolean(2, answer.isCorrect());
-        preparedStatement.setObject(3, answer.getId());
-        preparedStatement.executeUpdate();
-        connection.commit();
+        try{
+            connection.setAutoCommit(false);
+            String sql ="UPDATE answer SET answerline = ?, iscorrect = ? WHERE answerid = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, answer.getAnswerLine());
+            preparedStatement.setBoolean(2, answer.isCorrect());
+            preparedStatement.setObject(3, answer.getId());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
     public void delete(Answer answer) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql ="DELETE FROM answer WHERE answerid = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, answer.getId());
-        preparedStatement.executeUpdate();
-        connection.commit();
+        try{
+            connection.setAutoCommit(false);
+            String sql ="DELETE FROM answer WHERE answerid = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, answer.getId());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
+
     }
 
     @Override
     public List<Answer> getByParent(UUID id) throws SQLException {
-        List<Answer> answers = new ArrayList<>();
-        connection.setAutoCommit(false);
-        String sql = "" +
-                "SELECT * " +
-                "FROM answer " +
-                "WHERE questionid = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        connection.commit();
-       while (resultSet.next()){
-           answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+        try{
+            List<Answer> answers = new ArrayList<>();
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    "SELECT * " +
+                    "FROM answer " +
+                    "WHERE questionid = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, id);
+            resultSet = preparedStatement.executeQuery();
+            connection.commit();
+            while (resultSet.next()){
+                answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+            }
+            return answers;
         }
-       return answers;
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 }

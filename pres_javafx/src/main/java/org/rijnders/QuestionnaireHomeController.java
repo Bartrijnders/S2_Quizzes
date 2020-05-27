@@ -4,6 +4,7 @@ import com.rijnders.entityinterfaces.Questionnair;
 import com.rijnders.entityinterfaces.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import sevices.ActiveUserService;
@@ -25,7 +26,7 @@ public class QuestionnaireHomeController implements Initializable {
     public QuestionnaireHomeController() {
         activeUser = ActiveUserService.getInstance().getUser();
         this.questionnaireService = new QuestionnaireService();
-        questionnairList = questionnaireService.getAllUsersQuestionnaires(activeUser);
+      //TODO  questionnairList = questionnaireService.getAllUsersQuestionnaires(activeUser);
     }
 
     @Override

@@ -17,11 +17,10 @@ import java.util.List;
 public class AllUsersDao {
 
     private final ConnectionSetup conncection;
-    private final ResultConvertor resultToUserConvertor;
 
     public AllUsersDao() {
         this.conncection = new PostgresConnectionSetup();
-        this.resultToUserConvertor = new ResultToStandardUserConvertor();
+
     }
 
     public List<User> selectAllUsers(){
@@ -32,7 +31,7 @@ public class AllUsersDao {
             ResultSet resultSet = statement.executeQuery(getAllSQL)){
 
             while (resultSet.next()){
-                toReturn.add((StandardUser)resultToUserConvertor.convert(resultSet));
+                toReturn.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
             }
         }
         catch (SQLException e){

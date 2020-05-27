@@ -1,21 +1,27 @@
 package com.rijnders.entities;
 
+import com.rijnders.entityinterfaces.Answer;
+
+import java.util.List;
 import java.util.UUID;
 
 public abstract class StandardQuestion {
 
     private String questionLine;
     private QuestionType type;
-    private UUID id;
+    private final UUID id;
+    private final UUID questionnairId;
 
-    public StandardQuestion(String questionLine, UUID id) {
+    public StandardQuestion(String questionLine, UUID id, UUID questionnaireId) {
         this.questionLine = questionLine;
         this.id = id;
+        this.questionnairId = questionnaireId;
     }
 
-    public StandardQuestion(String questionLine) {
+    public StandardQuestion(String questionLine, UUID questionnaireId) {
         this.questionLine = questionLine;
         this.id = UUID.randomUUID();
+        this.questionnairId = questionnaireId;
     }
 
     public String getQuestionLine() {
@@ -36,5 +42,13 @@ public abstract class StandardQuestion {
 
     public void setType(QuestionType type) {
         this.type = type;
+    }
+
+    public UUID getQuestionnairId() {
+        return questionnairId;
+    }
+
+    public List<Answer> getAnswers(){
+        return null;
     }
 }

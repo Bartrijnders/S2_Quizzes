@@ -17,11 +17,9 @@ import java.util.List;
 public class SelectUserDao {
 
     private final ConnectionSetup connectionSetup;
-    private final ResultConvertor resultToUserConvertor;
 
     public SelectUserDao() {
         this.connectionSetup = new PostgresConnectionSetup();
-        this.resultToUserConvertor = new ResultToStandardUserConvertor();
     }
 
 
@@ -38,7 +36,7 @@ public class SelectUserDao {
             pstmt.setString(1, username);
             ResultSet resultSet = pstmt.executeQuery();
             if(resultSet.next())
-            output = (StandardUser) resultToUserConvertor.convert(resultSet);
+            output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());
@@ -60,7 +58,7 @@ public class SelectUserDao {
             pstmt.setString(2, email);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()){
-                output.add((User) resultToUserConvertor.convert(resultSet));
+                output.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
             }
         }
         catch (SQLException e){
@@ -81,7 +79,7 @@ public class SelectUserDao {
             pstmt.setString(1, email);
             ResultSet resultSet = pstmt.executeQuery();
             if(resultSet.next())
-            output =(User) resultToUserConvertor.convert(resultSet);
+            output =ResultToStandardUserConvertor.getInstance().convert(resultSet);
         }
         catch (SQLException e){
             System.out.println(e.getMessage());

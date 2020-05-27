@@ -10,33 +10,23 @@ public class MultipleChoiceQuestion extends StandardQuestion{
 
     private List<Answer> answers;
 
-    public MultipleChoiceQuestion(String questionLine, UUID id, List<Answer> answers) {
-        super(questionLine, id);
+    public MultipleChoiceQuestion(String questionLine, UUID id, UUID questionnaireId, List<Answer> answers) {
+        super(questionLine, id, questionnaireId);
         this.answers = answers;
         this.setType(QuestionType.MULTIPLECHOICE);
     }
 
-    public MultipleChoiceQuestion(String questionLine, List<Answer> answers) {
-        super(questionLine);
+    public MultipleChoiceQuestion(String questionLine, UUID questionnaireId, List<Answer> answers) {
+        super(questionLine, questionnaireId);
         this.answers = answers;
         this.setType(QuestionType.MULTIPLECHOICE);
     }
 
-    public MultipleChoiceQuestion(String questionLine, UUID id) {
-        super(questionLine, id);
-        this.setType(QuestionType.MULTIPLECHOICE);
-        this.answers = new ArrayList<>();
-    }
-
-    public MultipleChoiceQuestion(String questionLine) {
-        super(questionLine);
-        this.setType(QuestionType.MULTIPLECHOICE);
-        this.answers = new ArrayList<>();
-    }
-
+    @Override
     public List<Answer> getAnswers() {
         return answers;
     }
+
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;

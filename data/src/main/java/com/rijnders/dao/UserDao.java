@@ -1,10 +1,8 @@
 package com.rijnders.dao;
 
+import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
-import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.resultconvertors.ResultConvertor;
-import com.rijnders.resultconvertors.ResultToAnswerConvertor;
 import com.rijnders.resultconvertors.ResultToStandardUserConvertor;
 
 import java.sql.Connection;
@@ -17,69 +15,83 @@ import java.util.UUID;
 
 public class UserDao implements Dao<User>, DaoByString<User> {
 
-    private static UserDao userDaoInstance;
     private Connection connection;
-
-    private UserDao() {
+    private PreparedStatement preparedStatement;
+    private ResultSet resultSet;
+    private String selectEverything = "SELECT *";
+    public UserDao() {
         this.connection = new PostgresConnectionSetup().connect();
+        preparedStatement = null;
+        resultSet = null;
     }
 
-    public static UserDao getInstance() {
-        if (userDaoInstance == null) {
-            userDaoInstance = new UserDao();
-        }
-        return userDaoInstance;
-    }
 
     @Override
     public User get(UUID id) throws SQLException{
-        User output = null;
-        String sql = "" +
-                "SELECT * " +
-                "FROM \"user\" " +
-                "WHERE userid = ?";
+        try {
 
-        PreparedStatement pstmt = connection.prepareStatement(sql);
-        pstmt.setString(1, id.toString());
-        ResultSet resultSet = pstmt.executeQuery();
-        if (resultSet.next())
-            output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
+            User output = null;
+            String sql = "" +
+                    selectEverything +
+                    "FROM \"user\" " +
+                    "WHERE userid = ?";
 
-        connection.close();
-        return output;
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, id.toString());
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next())
+                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
+
+            connection.close();
+            return output;
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
+
     }
 
     @Override
     public List<User> getAll() throws SQLException {
-        List<User> output = new ArrayList<>();
-        String sql = "" +
-                "SELECT * " +
-                "FROM \"user\";";
+        try{
+            List<User> output = new ArrayList<>();
+            String sql = "" +
+                    selectEverything +
+                    "FROM \"user\";";
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            output.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                output.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
+            }
+            connection.close();
+            return output;
         }
-        connection.close();
-        return output;
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
+
     }
 
     @Override
     public void save(User user) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql = "" +
-                "INSERT INTO \"user\" " +
-                "(userid, username, email, password) " +
-                "VALUES (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, user.getUserId());
-        preparedStatement.setString(2, user.getUserName());
-        preparedStatement.setString(3, user.getEmail());
-        preparedStatement.setString(4, user.getPassword());
-        preparedStatement.executeUpdate();
-        connection.commit();
-
+        try{
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    "INSERT INTO \"user\" " +
+                    "(userid, username, email, password) " +
+                    "VALUES (?, ?, ?, ?)";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, user.getUserId());
+            preparedStatement.setString(2, user.getUserName());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
@@ -90,7 +102,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
                 "SET username=?, email=?, password=? " +
                 "WHERE userid = ?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, user.getUserName());
         preparedStatement.setString(2, user.getEmail());
         preparedStatement.setString(3, user.getPassword());
@@ -101,31 +113,39 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
     @Override
     public void delete(User user) throws SQLException {
-        connection.setAutoCommit(false);
-        String sql = "DELETE FROM \"user\" WHERE userid = ?";
+        try{
+            connection.setAutoCommit(false);
+            String sql = "DELETE FROM \"user\" WHERE userid = ?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, user.getUserId());
-        preparedStatement.executeUpdate();
-        connection.commit();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, user.getUserId());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
-    public User getByString(String email) {
+    public User getByString(String email) throws SQLException {
         User output = null;
-        String sql = "SELECT * " +
+        String sql = selectEverything +
                 "FROM \"user\" " +
                 "WHERE email = ?";
 
-        try(PreparedStatement pstmt = connection.prepareStatement(sql)){
-            pstmt.setString(1, email);
-            ResultSet resultSet = pstmt.executeQuery();
+        try{
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
             if(resultSet.next())
                 output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
         }
-        catch (SQLException e){
-            System.out.println(e.getMessage());
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
         }
         return output;
     }
+
+
 }
