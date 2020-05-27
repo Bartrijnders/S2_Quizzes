@@ -1,20 +1,22 @@
 package sevices;
 
+import com.rijnders.dao.Dao;
+import com.rijnders.dao.UserDao;
 import com.rijnders.entities.StandardUser;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.users.InserStandardUser;
-import com.rijnders.users.UserInsertable;
+
+import java.sql.SQLException;
 
 public class RegisterInsertService {
 
-    private final UserInsertable userInsertable;
+    private final Dao<User> dao;
 
     public RegisterInsertService() {
-        userInsertable = new InserStandardUser();
+        dao = new UserDao();
     }
 
-    public int registerNewUser(String username, String email, String password){
+    public void registerNewUser(String username, String email, String password) throws SQLException {
         User user = new StandardUser(username, email, password);
-        return userInsertable.insert(user);
+        dao.save(user);
     }
 }

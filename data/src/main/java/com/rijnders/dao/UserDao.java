@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public class UserDao implements Dao<User>, DaoByString<User> {
 
-    private Connection connection;
+    private final Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private String selectEverything = "SELECT *";
+    private final String selectEverything = "SELECT *";
     public UserDao() {
         this.connection = new PostgresConnectionSetup().connect();
         preparedStatement = null;
@@ -127,8 +127,9 @@ public class UserDao implements Dao<User>, DaoByString<User> {
         }
     }
 
+
     @Override
-    public User getByString(String email) throws SQLException {
+    public User getByEmail(String email) throws SQLException {
         User output = null;
         String sql = selectEverything +
                 "FROM \"user\" " +
@@ -147,5 +148,22 @@ public class UserDao implements Dao<User>, DaoByString<User> {
         return output;
     }
 
-
+    @Override
+    public User getByUsername(String username) throws SQLException {
+        User output = null;
+        String sql = selectEverything +
+                "FROM \"user\" " +
+                "WHERE username = ?";
+        try{
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())
+                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
+        }
+        return output;
+    }
 }

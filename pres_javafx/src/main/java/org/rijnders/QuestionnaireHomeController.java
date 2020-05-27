@@ -4,7 +4,7 @@ import com.rijnders.entityinterfaces.Questionnair;
 import com.rijnders.entityinterfaces.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import sevices.ActiveUserService;
@@ -12,6 +12,7 @@ import sevices.QuestionnaireService;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -19,14 +20,21 @@ public class QuestionnaireHomeController implements Initializable {
 
     @FXML public ListView questionnaireListView;
     @FXML public Button newQuestionnaireBtn;
-    private User activeUser;
+    private final User activeUser;
     private List<Questionnair> questionnairList;
-    private QuestionnaireService questionnaireService;
+    private final QuestionnaireService questionnaireService;
 
     public QuestionnaireHomeController() {
         activeUser = ActiveUserService.getInstance().getUser();
         this.questionnaireService = new QuestionnaireService();
-      //TODO  questionnairList = questionnaireService.getAllUsersQuestionnaires(activeUser);
+        try{
+            questionnairList = questionnaireService.getAllUsersQuestionnaires(activeUser);
+        }
+        catch (SQLException exception){
+            Alert alert = ExceptionAlert.getInstance().newSQLAlert(exception);
+            alert.show();
+        }
+
     }
 
     @Override

@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestionnaireDao implements Dao<Questionnair>{
+public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Questionnair>>{
 
-    private Connection connection;
+    private final Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private String selectEverything = "SELECT * ";
+    private final String selectEverything = "SELECT * ";
     private Dao<StandardQuestion> questionDao;
 
     public QuestionnaireDao() {
@@ -137,6 +137,30 @@ public class QuestionnaireDao implements Dao<Questionnair>{
             for(StandardQuestion question : questionnair.getQuestions()){
                 questionDao.delete(question);
             }
+        }
+        finally {
+            ConnCloser.getInstance().closeConnection(connection,preparedStatement,resultSet);
+        }
+    }
+
+    @Override
+    public List<Questionnair> getByParent(UUID id) throws SQLException {
+        List<Questionnair> questionnaires = new ArrayList<>();
+        try{
+            connection.setAutoCommit(false);
+            String sql = "" +
+                    selectEverything +
+                    "FROM questionnaire " +
+                    "WHERE userid = ?;";
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, id);
+            resultSet = preparedStatement.executeQuery();
+            connection.commit();
+            while (resultSet.next()){
+               questionnaires.add(ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet));
+            }
+            return questionnaires;
         }
         finally {
             ConnCloser.getInstance().closeConnection(connection,preparedStatement,resultSet);

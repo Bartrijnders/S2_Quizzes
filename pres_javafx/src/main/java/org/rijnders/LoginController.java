@@ -9,6 +9,7 @@ import sevices.ActiveUserService;
 import sevices.LoginService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginController {
 
@@ -18,23 +19,30 @@ public class LoginController {
 
     @FXML
     public void loginBtnClick() {
-        LoginService loginService = new LoginService();
-        User user = loginService.loginWithEmail(emailTxtF.getText(), passwordPswrdF.getText());
-        if(user == null){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Email or password is incorrect. try again.");
+        try{
+            LoginService loginService = new LoginService();
+            User user = loginService.loginWithEmail(emailTxtF.getText(), passwordPswrdF.getText());
+            if(user == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Email or password is incorrect. try again.");
+                alert.show();
+            }
+            else {
+                ActiveUserService activeUserService = ActiveUserService.getInstance();
+                activeUserService.setUser(user);
+
+                    App.setRoot("home");
+                }
+
+
+            }
+        catch (SQLException exception){
+            Alert alert = ExceptionAlert.getInstance().newSQLAlert(exception);
             alert.show();
         }
-        else {
-            ActiveUserService activeUserService = ActiveUserService.getInstance();
-            activeUserService.setUser(user);
-            try{
-                App.setRoot("home");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
+        catch (IOException exception){
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(exception);
+            alert.show();
         }
     }
 

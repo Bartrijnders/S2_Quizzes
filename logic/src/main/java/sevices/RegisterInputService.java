@@ -1,33 +1,31 @@
 package sevices;
 
+import com.rijnders.dao.DaoByString;
+import com.rijnders.dao.UserDao;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.users.SelectUserDao;
 import messages.RegisteryCheckMessage;
 
-import java.util.List;
+import java.sql.SQLException;
 
 public class RegisterInputService {
 
-    private final SelectUserDao selectUserDao;
+    private final DaoByString<User> userDao;
 
     public RegisterInputService() {
-        this.selectUserDao = new SelectUserDao();
+        this.userDao = new UserDao();
     }
 
-    public RegisteryCheckMessage checkInput(String username, String email){
-        List<User> foundUsers = selectUserDao.selectUsersByUsername_Email(username,email);
-        boolean username_unique;
-        boolean email_unique;
-
-        username_unique = foundUsers != null && foundUsers.stream()
-                .filter(e -> e.getUserName().toUpperCase() == username.toUpperCase())
-                .findFirst()
-                .orElse(null) == null;
-        email_unique = foundUsers != null && foundUsers.stream()
-                .filter(e -> e.getEmail().toUpperCase() == email.toUpperCase())
-                .findFirst()
-                .orElse(null) == null;
-
-        return new RegisteryCheckMessage(username_unique, email_unique);
+    public RegisteryCheckMessage checkInput(String username, String email) throws SQLException {
+        boolean usernameUnique = true;
+        boolean emailUnique = true;
+        User user = userDao.getByEmail(email);
+        if(user != null){
+            emailUnique = false;
+        }
+        user = userDao.getByUsername(username);
+        if(user != null){
+            usernameUnique = true;
+        }
+        return new RegisteryCheckMessage(usernameUnique, emailUnique);
     }
 }
