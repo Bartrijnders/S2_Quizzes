@@ -10,9 +10,9 @@
       <fx:reference source="controller"/>
    </userData>
    <properties>
-      <tag>
-         <fx:reference source="controller"/>
-      </tag>
+      <!--      <cont>-->
+      <!--         <fx:reference source="controller"/>-->
+      <!--      </cont>-->
 
    </properties>
    <children>

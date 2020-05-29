@@ -23,6 +23,7 @@ public class OpenQuestionControlController extends Group implements Initializabl
     @FXML
     public Group group;
 
+
     public OpenQuestionControlController() {
         textService = new StandardTextService();
     }
