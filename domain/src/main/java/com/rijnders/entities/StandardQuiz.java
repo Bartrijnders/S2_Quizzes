@@ -1,6 +1,6 @@
 package com.rijnders.entities;
 
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.Quiz;
 import com.rijnders.entityinterfaces.Turn;
 import com.rijnders.entityinterfaces.User;
@@ -14,22 +14,22 @@ public class StandardQuiz implements Quiz {
 
     private final User participant;
     private final List<Turn> turns;
-    private final Questionnair questionnair;
+    private final Questionnaire questionnaire;
     private final UUID id;
-    private LocalTime timeOfCreation;
+    private final LocalTime timeOfCreation;
 
 
-    public StandardQuiz(User participant, List<Turn> turns, Questionnair questionnair, UUID id, LocalTime timeOfCreation) {
+    public StandardQuiz(User participant, List<Turn> turns, Questionnaire questionnaire, UUID id, LocalTime timeOfCreation) {
         this.participant = participant;
         this.turns = turns;
-        this.questionnair = questionnair;
+        this.questionnaire = questionnaire;
         this.id = id;
         this.timeOfCreation = timeOfCreation;
     }
 
-    public StandardQuiz(User participant, Questionnair questionnair) {
+    public StandardQuiz(User participant, Questionnaire questionnaire) {
         this.participant = participant;
-        this.questionnair = questionnair;
+        this.questionnaire = questionnaire;
         this.id = UUID.randomUUID();
         this.turns = new ArrayList<>();
         this.timeOfCreation = LocalTime.now();
@@ -50,8 +50,8 @@ public class StandardQuiz implements Quiz {
     }
 
     @Override
-    public Questionnair getQuestionnair() {
-        return questionnair;
+    public Questionnaire getQuestionnair() {
+        return questionnaire;
     }
 
     @Override

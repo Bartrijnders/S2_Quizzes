@@ -12,4 +12,6 @@ public interface Answer {
     void setCorrect(boolean correct);
 
     UUID getId();
+
+    UUID getQuestionId();
 }

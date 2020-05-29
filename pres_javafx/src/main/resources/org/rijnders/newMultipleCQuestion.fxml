@@ -1,53 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
-<Group xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.rijnders.NewMultipleCQuestionController">
-   <children>
-      <VBox prefWidth="572.0">
-         <children>
-            <TextField fx:id="questionTextField" promptText="Question">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-            </TextField>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <children>
-                  <TextField fx:id="answerATextField" promptText="Answer A">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" right="5.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="answerCTextField" promptText="Answer C" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets right="5.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="answerBTextField" promptText="Answer B" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="answerDTextField" promptText="Answer D" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets left="5.0" />
-                     </GridPane.margin>
-                  </TextField>
-               </children>
+<Group xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+       fx:controller="org.rijnders.NewMultipleCQuestionController">
+    <userData>
+        <fx:reference source="controller"/>
+    </userData>
+    <properties>
+        <cont>
+            <fx:reference source="controller"/>
+        </cont>
+    </properties>
+    <children>
+        <VBox fx:id="anchorVBox" prefWidth="520.0"
+              style="-fx-border-color: Grey; -fx-border-radius: 10px; -fx-border-width: 3px;">
+            <children>
+                <TextField fx:id="questionTextField" promptText="Question">
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </VBox.margin>
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                </TextField>
+                <GridPane fx:id="anchorGridPane">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="112.0" minWidth="10.0"
+                                           percentWidth="5.0" prefWidth="20.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="207.0" minWidth="10.0" prefWidth="205.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="228.0" minWidth="10.0" prefWidth="228.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </VBox.margin>
+                    <children>
+                        <TextField fx:id="answerATextField" promptText="Answer A" GridPane.columnIndex="1">
+                            <GridPane.margin>
+                                <Insets bottom="5.0" right="5.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <TextField fx:id="answerCTextField" promptText="Answer C" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets right="5.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <TextField fx:id="answerBTextField" promptText="Answer B" GridPane.columnIndex="2">
+                            <GridPane.margin>
+                                <Insets bottom="5.0" left="5.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <TextField fx:id="answerDTextField" promptText="Answer D" GridPane.columnIndex="2"
+                                   GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets left="5.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <RadioButton fx:id="answerARadioButton" mnemonicParsing="false" selected="true">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="checkGroup"/>
+                            </toggleGroup>
+                            <GridPane.margin>
+                                <Insets bottom="5.0"/>
+                            </GridPane.margin>
+                        </RadioButton>
+                        <RadioButton fx:id="answerCRadioButton" mnemonicParsing="false" toggleGroup="$checkGroup"
+                                     GridPane.rowIndex="1"/>
+                        <RadioButton fx:id="answerBRadioButton" mnemonicParsing="false" toggleGroup="$checkGroup"
+                                     GridPane.columnIndex="3">
+                            <GridPane.margin>
+                                <Insets bottom="5.0"/>
+                            </GridPane.margin>
+                        </RadioButton>
+                        <RadioButton fx:id="answerDRadioButton" mnemonicParsing="false" toggleGroup="$checkGroup"
+                                     GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    </children>
             </GridPane>
          </children>
       </VBox>

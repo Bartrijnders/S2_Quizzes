@@ -14,6 +14,7 @@ import sevices.RegisterService;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,7 +26,7 @@ public class RegisterController implements Initializable {
     @FXML public TextField emailTxt;
     @FXML public PasswordField passwordTxt;
     @FXML public PasswordField repasswordPswdF;
-    @FXML public Button confirm_btn;
+    @FXML public Button confirmBtn;
     List<Node> nodes = new ArrayList<>();
 
     public RegisterController() {
@@ -42,7 +43,7 @@ public class RegisterController implements Initializable {
             node.focusedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldPropertyValue, Boolean newPropertyValue) {
-                    if(newPropertyValue) {
+                    if(Boolean.TRUE.equals(newPropertyValue)) {
                        checkFilledIn();
                     }
                 }
@@ -60,56 +61,54 @@ public class RegisterController implements Initializable {
     public void checkFilledIn(){
         boolean pass = true;
         for(Node node : nodes){
-            if(node instanceof TextField){
-                if(((TextField) node).getText().isEmpty()){
+            if(node instanceof TextField && ((TextField) node).getText().isEmpty()){
                     pass = false;
-                }
+                    confirmBtn.setDisable(true);
+
             }
         }
         if(pass){
-            confirm_btn.setDisable(false);
+                confirmBtn.setDisable(false);
         }
-        else{
-            confirm_btn.setDisable(true);
-        }
+
     }
 
     @FXML
     public void confirmBtnClick(){
-        //TODO content check.
-        RegisteryCheckMessage result = registerService.register(usernameTxt.getText(), emailTxt.getText(), passwordTxt.getText());
+        try {
+            RegisteryCheckMessage result = registerService.register(usernameTxt.getText(), emailTxt.getText(), passwordTxt.getText());
 
-        if(!result.getUsernameIsUnique() && !result.getEmailIsUnique()){
-            emailTxt.setStyle("-fx-text-fill: red; -fx-border-color: red");
-            usernameTxt.setStyle("-fx-text-fill: red; -fx-border-color: red");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Username and email already in use. chose another one.");
-            alert.show();
-        }
+            String style = "-fx-text-fill: red; -fx-border-color: #ff0000";
 
-        else if(!result.getEmailIsUnique()){
-            emailTxt.setStyle("-fx-text-fill: red; -fx-border-color: red");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Email already in use. chose another one.");
-            alert.show();
-        }
-        else if(!result.getUsernameIsUnique()){
-            usernameTxt.setStyle("-fx-text-fill: red; -fx-border-color: red");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Username already in use. chose another one.");
-            alert.show();
-        }
-        else{
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setHeaderText("new account created. please log in");
-            a.show();
-            try{
-                App.setRoot("login");
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (Boolean.FALSE.equals(result.getUsernameIsUnique()) && Boolean.FALSE.equals(result.getEmailIsUnique())) {
+                emailTxt.setStyle(style);
+                usernameTxt.setStyle(style);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Username and email already in use. chose another one.");
+                alert.show();
+            } else if (Boolean.FALSE.equals(result.getEmailIsUnique())) {
+                emailTxt.setStyle(style);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Email already in use. chose another one.");
+                alert.show();
+            } else if (Boolean.FALSE.equals(result.getUsernameIsUnique())) {
+                usernameTxt.setStyle(style);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Username already in use. chose another one.");
+                alert.show();
+            } else {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setHeaderText("new account created. please log in");
+                a.show();
+                try {
+                    App.setRoot("login");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
         }
-
+        catch (SQLException exception){
+            ExceptionAlert.getInstance().newSQLAlert(exception);
+        }
     }
 }

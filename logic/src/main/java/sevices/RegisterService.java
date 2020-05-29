@@ -2,6 +2,8 @@ package sevices;
 
 import messages.RegisteryCheckMessage;
 
+import java.sql.SQLException;
+
 public class RegisterService {
 
     private final RegisterInputService registerInputService;
@@ -12,7 +14,7 @@ public class RegisterService {
         this.registerInsertService = new RegisterInsertService();
     }
 
-    public RegisteryCheckMessage register(String username, String email, String password){
+    public RegisteryCheckMessage register(String username, String email, String password) throws SQLException {
         RegisteryCheckMessage check = registerInputService.checkInput(username, email);
 
         if(check.getEmailIsUnique()&&check.getUsernameIsUnique()){

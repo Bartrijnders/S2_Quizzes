@@ -1,13 +1,13 @@
 package com.rijnders.entities;
 
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class StandardQuestionnaire implements Questionnair {
+public class StandardQuestionnaire implements Questionnaire {
 
     private final UUID id;
     private String name;

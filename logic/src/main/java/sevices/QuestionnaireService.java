@@ -1,22 +1,31 @@
 package sevices;
 
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.dao.Dao;
+import com.rijnders.dao.DaoByParent;
+import com.rijnders.dao.QuestionnaireDao;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.questionnaire.QuestionnaireDao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class QuestionnaireService {
 
-    private QuestionnaireDao questionnaireDao;
+    private final DaoByParent<List<Questionnaire>> daoByParent;
+    private final Dao<Questionnaire> dao;
 
     public QuestionnaireService() {
-        this.questionnaireDao = new QuestionnaireDao();
+        this.daoByParent = new QuestionnaireDao();
+        this.dao = new QuestionnaireDao();
     }
 
-    public List<Questionnair> getAllUsersQuestionnaires(User user){
-        List<Questionnair> output;
-        output = questionnaireDao.selectAllUserQuestionnaire(user);
+    public List<Questionnaire> getAllUsersQuestionnaires(User user) throws SQLException {
+        List<Questionnaire> output = null;
+        output = daoByParent.getByParent(user.getUserId());
         return output;
+    }
+
+    public void save(Questionnaire questionnaire) throws SQLException {
+        dao.save(questionnaire);
     }
 }
