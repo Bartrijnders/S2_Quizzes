@@ -8,7 +8,7 @@ public interface Quiz {
 
     List<Turn> getTurns();
 
-    Questionnair getQuestionnair();
+    Questionnaire getQuestionnair();
 
     UUID getId();
 }

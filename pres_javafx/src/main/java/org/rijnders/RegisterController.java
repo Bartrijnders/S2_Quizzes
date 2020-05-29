@@ -78,7 +78,7 @@ public class RegisterController implements Initializable {
         try {
             RegisteryCheckMessage result = registerService.register(usernameTxt.getText(), emailTxt.getText(), passwordTxt.getText());
 
-            String style = "-fx-text-fill: red; -fx-border-color: red";
+            String style = "-fx-text-fill: red; -fx-border-color: #ff0000";
 
             if (Boolean.FALSE.equals(result.getUsernameIsUnique()) && Boolean.FALSE.equals(result.getEmailIsUnique())) {
                 emailTxt.setStyle(style);

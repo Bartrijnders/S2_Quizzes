@@ -1,8 +1,5 @@
 package com.rijnders.entities;
 
-import com.rijnders.entityinterfaces.Answer;
-
-import java.util.List;
 import java.util.UUID;
 
 public abstract class StandardQuestion {
@@ -46,9 +43,5 @@ public abstract class StandardQuestion {
 
     public UUID getQuestionnairId() {
         return questionnairId;
-    }
-
-    public List<Answer> getAnswers(){
-        return null;
     }
 }

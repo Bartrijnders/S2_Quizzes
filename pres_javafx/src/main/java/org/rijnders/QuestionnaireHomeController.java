@@ -1,6 +1,6 @@
 package org.rijnders;
 
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,19 +18,18 @@ import java.util.ResourceBundle;
 
 public class QuestionnaireHomeController implements Initializable {
 
-    @FXML public ListView questionnaireListView;
-    @FXML public Button newQuestionnaireBtn;
-    private final User activeUser;
-    private List<Questionnair> questionnairList;
-    private final QuestionnaireService questionnaireService;
+    @FXML
+    public ListView<Object> questionnaireListView;
+    @FXML
+    public Button newQuestionnaireBtn;
+    private List<Questionnaire> questionnaireList;
 
     public QuestionnaireHomeController() {
-        activeUser = ActiveUserService.getInstance().getUser();
-        this.questionnaireService = new QuestionnaireService();
-        try{
-            questionnairList = questionnaireService.getAllUsersQuestionnaires(activeUser);
-        }
-        catch (SQLException exception){
+        User activeUser = ActiveUserService.getInstance().getUser();
+        QuestionnaireService questionnaireService = new QuestionnaireService();
+        try {
+            questionnaireList = questionnaireService.getAllUsersQuestionnaires(activeUser);
+        } catch (SQLException exception) {
             Alert alert = ExceptionAlert.getInstance().newSQLAlert(exception);
             alert.show();
         }
@@ -39,13 +38,12 @@ public class QuestionnaireHomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if(!questionnairList.isEmpty()){
-            for(Questionnair questionnair : questionnairList){
-                questionnaireListView.getItems().add(questionnair);
+        if (!questionnaireList.isEmpty()) {
+            for (Questionnaire questionnaire : questionnaireList) {
+                questionnaireListView.getItems().add(questionnaire);
             }
-        }
-        else{
-            questionnaireListView.getItems().add("no questionnairs found");
+        } else {
+            questionnaireListView.getItems().add("no questionnaires found");
         }
     }
 

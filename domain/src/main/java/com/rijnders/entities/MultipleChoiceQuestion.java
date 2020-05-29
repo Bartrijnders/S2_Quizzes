@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MultipleChoiceQuestion extends StandardQuestion{
+public class MultipleChoiceQuestion extends StandardQuestion implements answerGetAble<List<Answer>> {
 
     private List<Answer> answers;
 
@@ -16,9 +16,9 @@ public class MultipleChoiceQuestion extends StandardQuestion{
         this.setType(QuestionType.MULTIPLECHOICE);
     }
 
-    public MultipleChoiceQuestion(String questionLine, UUID questionnaireId, List<Answer> answers) {
+    public MultipleChoiceQuestion(String questionLine, UUID questionnaireId) {
         super(questionLine, questionnaireId);
-        this.answers = answers;
+        this.answers = new ArrayList<>();
         this.setType(QuestionType.MULTIPLECHOICE);
     }
 

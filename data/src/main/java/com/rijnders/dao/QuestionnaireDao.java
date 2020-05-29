@@ -3,7 +3,7 @@ package com.rijnders.dao;
 import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entities.StandardQuestion;
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.resultconvertors.ResultToQuestinnaireConverter;
 
 import java.sql.Connection;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Questionnair>>{
+public class QuestionnaireDao implements Dao<Questionnaire>, DaoByParent<List<Questionnaire>> {
 
-    private final Connection connection;
+    private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
     private final String selectEverything = "SELECT * ";
@@ -29,8 +29,9 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public Questionnair get(UUID id) throws SQLException {
-        try{
+    public Questionnaire get(UUID id) throws SQLException {
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     selectEverything +
@@ -52,9 +53,10 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public List<Questionnair> getAll() throws SQLException {
-        try{
-            List<Questionnair> questionnairs = new ArrayList<>();
+    public List<Questionnaire> getAll() throws SQLException {
+        try {
+            connection = new PostgresConnectionSetup().connect();
+            List<Questionnaire> questionnaires = new ArrayList<>();
             connection.setAutoCommit(false);
             String sql = "" +
                     selectEverything +
@@ -63,10 +65,10 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             connection.commit();
-            while(resultSet.next()){
-                questionnairs.add(ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet));
+            while (resultSet.next()) {
+                questionnaires.add(ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet));
             }
-            return questionnairs;
+            return questionnaires;
         }
         finally {
             ConnCloser.getInstance().closeConnection(connection,preparedStatement,resultSet);
@@ -74,21 +76,22 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public void save(Questionnair questionnair) throws SQLException {
-        try{
+    public void save(Questionnaire questionnaire) throws SQLException {
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "INSERT INTO questionnaire " +
                     "(questionnaireid, userid, name) " +
                     "VALUES (?,?,?);";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setObject(1, questionnair.getId());
-            preparedStatement.setObject(2, questionnair.getAuthor().getUserId());
-            preparedStatement.setString(3, questionnair.getName());
+            preparedStatement.setObject(1, questionnaire.getId());
+            preparedStatement.setObject(2, questionnaire.getAuthor().getUserId());
+            preparedStatement.setString(3, questionnaire.getName());
             preparedStatement.executeUpdate();
             connection.commit();
             questionDao = new QuestionDao();
-            for(StandardQuestion question : questionnair.getQuestions()){
+            for (StandardQuestion question : questionnaire.getQuestions()) {
                 questionDao.save(question);
             }
         }
@@ -98,8 +101,9 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public void update(Questionnair questionnair) throws SQLException {
-        try{
+    public void update(Questionnaire questionnaire) throws SQLException {
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     "UPDATE questionnaire " +
@@ -107,12 +111,12 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
                     "WHERE questionnaireid = ?";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, questionnair.getName());
-            preparedStatement.setObject(2, questionnair.getId());
+            preparedStatement.setString(1, questionnaire.getName());
+            preparedStatement.setObject(2, questionnaire.getId());
             preparedStatement.executeUpdate();
             connection.commit();
             questionDao = new QuestionDao();
-            for(StandardQuestion question : questionnair.getQuestions()){
+            for (StandardQuestion question : questionnaire.getQuestions()) {
                 questionDao.update(question);
             }
         }
@@ -122,19 +126,20 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public void delete(Questionnair questionnair) throws SQLException {
-        try{
+    public void delete(Questionnaire questionnaire) throws SQLException {
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "DELETE" +
                     " FROM questionnaire " +
                     "WHERE questionnaireid = ?;";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setObject(1, questionnair.getId());
+            preparedStatement.setObject(1, questionnaire.getId());
             preparedStatement.executeUpdate();
             connection.commit();
             questionDao = new QuestionDao();
-            for(StandardQuestion question : questionnair.getQuestions()){
+            for (StandardQuestion question : questionnaire.getQuestions()) {
                 questionDao.delete(question);
             }
         }
@@ -144,9 +149,10 @@ public class QuestionnaireDao implements Dao<Questionnair>, DaoByParent<List<Que
     }
 
     @Override
-    public List<Questionnair> getByParent(UUID id) throws SQLException {
-        List<Questionnair> questionnaires = new ArrayList<>();
-        try{
+    public List<Questionnaire> getByParent(UUID id) throws SQLException {
+        List<Questionnaire> questionnaires = new ArrayList<>();
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     selectEverything +

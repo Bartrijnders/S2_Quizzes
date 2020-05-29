@@ -34,7 +34,7 @@ public class ResultToQuestionConvertor implements ResultConvertor<StandardQuesti
         UUID questionId = UUID.fromString(questionIdStr);
         String questionnaireIdStr = resultSet.getString("questionnaireid");
         UUID questionnaireId = UUID.fromString(questionnaireIdStr);
-        String questionLine = resultSet.getString("questoinline");
+        String questionLine = resultSet.getString("questionline");
         String questionTypeStr = resultSet.getString("type");
         QuestionType questionType = QuestionType.valueOf(questionTypeStr);
         AnswerDao answerDao = new AnswerDao();

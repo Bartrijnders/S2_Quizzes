@@ -37,7 +37,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
                     "WHERE userid = ?";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, id.toString());
+            preparedStatement.setObject(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
                 output = ResultToStandardUserConvertor.getInstance().convert(resultSet);

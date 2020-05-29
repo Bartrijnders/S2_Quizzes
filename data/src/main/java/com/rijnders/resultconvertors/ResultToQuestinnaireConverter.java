@@ -6,7 +6,7 @@ import com.rijnders.dao.QuestionDao;
 import com.rijnders.dao.UserDao;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entities.StandardQuestionnaire;
-import com.rijnders.entityinterfaces.Questionnair;
+import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.User;
 
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class ResultToQuestinnaireConverter {
         return resultToQuestinnaireConverterInstance;
     }
 
-    public Questionnair convertToStandard(ResultSet resultSet) throws SQLException {
+    public Questionnaire convertToStandard(ResultSet resultSet) throws SQLException {
         String idStr = resultSet.getString("questionnaireid");
         UUID id = UUID.fromString(idStr);
         String userIdStr = resultSet.getString("userid");
@@ -38,6 +38,6 @@ public class ResultToQuestinnaireConverter {
         DaoByParent<List<StandardQuestion>> daoByParent = new QuestionDao();
         List<StandardQuestion> questions = daoByParent.getByParent(id);
         Dao<User> dao = new UserDao();
-        return new StandardQuestionnaire(id, name, questions,dao.get(userId));
+        return new StandardQuestionnaire(id, name, questions, dao.get(userId));
     }
 }

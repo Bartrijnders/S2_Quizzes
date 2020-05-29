@@ -4,18 +4,29 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.VBox?>
-<Group fx:id="group" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.rijnders.OpenQuestionControlController">
+<Group xmlns:fx="http://javafx.com/fxml/1" fx:id="group" xmlns="http://javafx.com/javafx/8"
+       fx:controller="org.rijnders.OpenQuestionControlController">
+   <userData>
+      <fx:reference source="controller"/>
+   </userData>
+   <properties>
+      <tag>
+         <fx:reference source="controller"/>
+      </tag>
+
+   </properties>
    <children>
-      <VBox prefWidth="600.0" style="-fx-border-color: #C0C0C0; -fx-border-width: 1px;">
+      <VBox fx:id="anchorVBox" prefWidth="520.0"
+            style="-fx-border-color: Grey; -fx-border-radius: 10px; -fx-border-width: 3px;">
          <children>
             <TextField fx:id="questionTextField" promptText="Question">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                </VBox.margin>
             </TextField>
             <TextField fx:id="answerTextField" promptText="Answer">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                </VBox.margin>
             </TextField>
          </children>

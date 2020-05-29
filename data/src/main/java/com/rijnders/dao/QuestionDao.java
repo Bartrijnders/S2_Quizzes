@@ -2,10 +2,11 @@ package com.rijnders.dao;
 
 import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
+import com.rijnders.entities.MultipleChoiceQuestion;
+import com.rijnders.entities.OpenQuestion;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entityinterfaces.Answer;
 import com.rijnders.resultconvertors.ResultToQuestionConvertor;
-
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<StandardQuestion>{
 
-    private final Connection connection;
+    private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
@@ -29,6 +30,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     @Override
     public StandardQuestion get(UUID id) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "SELECT * FROM question WHERE questionid = ?;";
             preparedStatement = connection.prepareStatement(sql);
@@ -49,6 +51,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     @Override
     public List<StandardQuestion> getAll() throws SQLException {
         try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             List<StandardQuestion> questions = new ArrayList<>();
             String sql = "SELECT * FROM question;";
@@ -69,6 +72,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     @Override
     public void save(StandardQuestion question) throws SQLException {
         try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     "INSERT INTO question " +
@@ -82,8 +86,12 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             preparedStatement.executeUpdate();
             connection.commit();
             AnswerDao answerDao = new AnswerDao();
-            for(Answer answer : question.getAnswers()){
-                answerDao.save(answer);
+            if (question instanceof OpenQuestion) {
+                answerDao.save(((OpenQuestion) question).getAnswer());
+            } else if (question instanceof MultipleChoiceQuestion) {
+                for (Answer answer : ((MultipleChoiceQuestion) question).getAnswers()) {
+                    answerDao.save(answer);
+                }
             }
         }
         finally {
@@ -94,6 +102,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     @Override
     public void update(StandardQuestion question) throws SQLException {
         try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     "UPDATE question SET questionline=?";
@@ -102,9 +111,14 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             preparedStatement.executeUpdate();
             connection.commit();
             AnswerDao answerDao = new AnswerDao();
-            for(Answer answer : question.getAnswers()){
-                answerDao.update(answer);
+            if (question instanceof OpenQuestion) {
+                answerDao.update(((OpenQuestion) question).getAnswer());
+            } else if (question instanceof MultipleChoiceQuestion) {
+                for (Answer answer : ((MultipleChoiceQuestion) question).getAnswers()) {
+                    answerDao.update(answer);
+                }
             }
+
         }
         finally {
             ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
@@ -113,10 +127,15 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
 
     @Override
     public void delete(StandardQuestion question) throws SQLException {
-        try{
+        try {
+            connection = new PostgresConnectionSetup().connect();
             AnswerDao answerDao = new AnswerDao();
-            for(Answer answer : question.getAnswers()){
-                answerDao.delete(answer);
+            if (question instanceof OpenQuestion) {
+                answerDao.delete(((OpenQuestion) question).getAnswer());
+            } else if (question instanceof MultipleChoiceQuestion) {
+                for (Answer answer : ((MultipleChoiceQuestion) question).getAnswers()) {
+                    answerDao.delete(answer);
+                }
             }
             connection.setAutoCommit(false);
             String sql = "" +
@@ -136,6 +155,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     @Override
     public List<StandardQuestion> getByParent(UUID id) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             List<StandardQuestion> questions = new ArrayList<>();
             String sql = "SELECT * FROM question WHERE questionnaireid = ?;";

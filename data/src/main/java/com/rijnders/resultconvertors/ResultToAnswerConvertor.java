@@ -24,7 +24,7 @@ public class ResultToAnswerConvertor implements ResultConvertor<Answer> {
 
     @Override
     public Answer convert(ResultSet resultSet) throws SQLException {
-        String answeridStr = resultSet.getString("userid");
+        String answeridStr = resultSet.getString("answerid");
         UUID answerid = UUID.fromString(answeridStr);
         String answerLine = resultSet.getString("answerline");
         boolean isCorrect = resultSet.getBoolean("iscorrect");

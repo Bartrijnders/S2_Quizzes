@@ -43,19 +43,21 @@
                         <Insets left="20.0" right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="addOpenBtn" mnemonicParsing="false" text="Add Open Question" onAction="#newOpenBtnClick">
+                  <Button fx:id="addOpenBtn" mnemonicParsing="false" text="Add Open Question"
+                          onAction="#newOpenBtnClick">
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets left="20.0" right="20.0"/>
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="addMultipleChoiceBtn" mnemonicParsing="false" text="Add Multiple Choice Question" onAction="#newMultipleCBtnClick">
+                  <Button fx:id="addMultipleChoiceBtn" mnemonicParsing="false" text="Add Multiple Choice Question"
+                          onAction="#newMultipleCBtnClick">
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets left="20.0" right="20.0"/>
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="saveBtn" mnemonicParsing="false" text="Save">
+                  <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" onAction="#saveButtonClick">
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets left="20.0" right="20.0"/>
                      </HBox.margin>
                   </Button>
                </children>

@@ -5,7 +5,7 @@ import com.rijnders.entities.StandardQuestion;
 import java.util.List;
 import java.util.UUID;
 
-public interface Questionnair {
+public interface Questionnaire {
     UUID getId();
 
     String getName();

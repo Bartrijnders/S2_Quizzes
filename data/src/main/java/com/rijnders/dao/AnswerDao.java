@@ -15,20 +15,19 @@ import java.util.UUID;
 
 public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
 
-    private final Connection connection;
+    private final String selectEverything = "SELECT * ";
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
-    private String selectEverything = "SELECT * ";
+    private Connection connection;
 
     public AnswerDao() {
         connection = new PostgresConnectionSetup().connect();
     }
 
-
-
     @Override
     public Answer get(UUID id) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     selectEverything +
@@ -51,6 +50,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
     @Override
     public List<Answer> getAll() throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             List<Answer> answers = new ArrayList<>();
             connection.setAutoCommit(false);
             String sql = "" +
@@ -71,7 +71,8 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
 
     @Override
     public void save(Answer answer) throws SQLException {
-        try{
+        try {
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
                     "INSERT INTO answer (answerid, answerline, iscorrect, questionid) " +
@@ -80,8 +81,9 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
             preparedStatement.setObject(1, answer.getId());
             preparedStatement.setString(2, answer.getAnswerLine());
             preparedStatement.setBoolean(3, answer.isCorrect());
-            preparedStatement.setObject(4, answer.getQuestionId() );
-            preparedStatement.executeQuery();
+            preparedStatement.setObject(4, answer.getQuestionId());
+            preparedStatement.executeUpdate();
+            connection.commit();
         }
         finally {
             ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
@@ -91,6 +93,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
     @Override
     public void update(Answer answer) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql ="UPDATE answer SET answerline = ?, iscorrect = ? WHERE answerid = ?";
             preparedStatement = connection.prepareStatement(sql);
@@ -108,6 +111,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
     @Override
     public void delete(Answer answer) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql ="DELETE FROM answer WHERE answerid = ?";
             preparedStatement = connection.prepareStatement(sql);
@@ -123,6 +127,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
     @Override
     public List<Answer> getByParent(UUID id) throws SQLException {
         try{
+            connection = new PostgresConnectionSetup().connect();
             List<Answer> answers = new ArrayList<>();
             connection.setAutoCommit(false);
             String sql = "" +

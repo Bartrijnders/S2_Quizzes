@@ -8,15 +8,22 @@ public class StandardAnswer implements Answer {
 
     private String answerLine;
     private boolean isCorrect;
-    private UUID id;
+    private final UUID id;
     private UUID questionId;
 
     public StandardAnswer(String answerLine, boolean isCorrect, UUID id, UUID questionId) {
         this.answerLine = answerLine;
         this.isCorrect = isCorrect;
         this.id = id;
+        this.questionId = questionId;
     }
 
+    public StandardAnswer(String answerLine, boolean isCorrect, UUID questionId) {
+        this.questionId = questionId;
+        this.answerLine = answerLine;
+        this.isCorrect = isCorrect;
+        this.id = UUID.randomUUID();
+    }
 
     public String getAnswerLine() {
         return answerLine;
@@ -41,5 +48,9 @@ public class StandardAnswer implements Answer {
     @Override
     public UUID getQuestionId() {
         return questionId;
+    }
+
+    public void setQuestionId(UUID questionId) {
+        this.questionId = questionId;
     }
 }
