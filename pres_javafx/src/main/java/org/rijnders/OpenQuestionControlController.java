@@ -30,6 +30,7 @@ public class OpenQuestionControlController extends Group implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 
     @Override
@@ -58,6 +59,11 @@ public class OpenQuestionControlController extends Group implements Initializabl
         } else {
             return null;
         }
+    }
+
+    public void fillIn(OpenQuestion openQuestion) {
+        questionTextField.setText(openQuestion.getQuestionLine());
+        answerTextField.setText(openQuestion.getAnswer().getAnswerLine());
     }
 
 }

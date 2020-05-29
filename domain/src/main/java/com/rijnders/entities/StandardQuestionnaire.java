@@ -25,6 +25,7 @@ public class StandardQuestionnaire implements Questionnaire {
         this.id = id;
         this.name = name;
         this.author = author;
+        this.questions = new ArrayList<>();
     }
 
     public StandardQuestionnaire(String name, User author) {

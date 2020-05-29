@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -38,28 +37,36 @@
             </ListView>
             <HBox alignment="CENTER" prefHeight="50.0" prefWidth="600.0" VBox.vgrow="NEVER">
                <children>
-                  <Button fx:id="backBtn" mnemonicParsing="false" text="Back" onAction="#backBtnClick">
-                     <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="addOpenBtn" mnemonicParsing="false" text="Add Open Question"
-                          onAction="#newOpenBtnClick">
-                     <HBox.margin>
-                        <Insets left="20.0" right="20.0"/>
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="addMultipleChoiceBtn" mnemonicParsing="false" text="Add Multiple Choice Question"
-                          onAction="#newMultipleCBtnClick">
-                     <HBox.margin>
-                        <Insets left="20.0" right="20.0"/>
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" onAction="#saveButtonClick">
-                     <HBox.margin>
-                        <Insets left="20.0" right="20.0"/>
-                     </HBox.margin>
-                  </Button>
+                   <Button fx:id="backBtn" cancelButton="true" mnemonicParsing="false" onAction="#backBtnClick"
+                           text="Back">
+                       <HBox.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </HBox.margin>
+                   </Button>
+                   <Button fx:id="addOpenBtn" mnemonicParsing="false" onAction="#newOpenBtnClick"
+                           text="Add Open Question">
+                       <HBox.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </HBox.margin>
+                   </Button>
+                   <Button fx:id="addMultipleChoiceBtn" mnemonicParsing="false" onAction="#newMultipleCBtnClick"
+                           text="Add Multiple Choice Question">
+                       <HBox.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </HBox.margin>
+                   </Button>
+                   <Button fx:id="deleteBtn" disable="true" mnemonicParsing="false" onAction="#setDeleteBtn"
+                           text="Delete">
+                       <HBox.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </HBox.margin>
+                   </Button>
+                   <Button fx:id="saveBtn" defaultButton="true" mnemonicParsing="false" onAction="#saveButtonClick"
+                           text="Save">
+                       <HBox.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </HBox.margin>
+                   </Button>
                </children>
             </HBox>
          </children>

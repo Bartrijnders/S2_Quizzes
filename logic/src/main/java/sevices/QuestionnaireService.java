@@ -28,4 +28,8 @@ public class QuestionnaireService {
     public void save(Questionnaire questionnaire) throws SQLException {
         dao.save(questionnaire);
     }
+
+    public void delete(Questionnaire questionnaire) throws SQLException {
+        dao.delete(questionnaire);
+    }
 }

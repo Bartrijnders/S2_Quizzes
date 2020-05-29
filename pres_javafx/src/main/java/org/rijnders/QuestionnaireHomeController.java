@@ -2,11 +2,13 @@ package org.rijnders;
 
 import com.rijnders.entityinterfaces.Questionnaire;
 import com.rijnders.entityinterfaces.User;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import sevices.ActiveUserService;
 import sevices.QuestionnaireService;
 
@@ -45,6 +47,24 @@ public class QuestionnaireHomeController implements Initializable {
         } else {
             questionnaireListView.getItems().add("no questionnaires found");
         }
+
+        questionnaireListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getClickCount() == 2) {
+                    try {
+                        App.setRoot("editQuestionnairePage");
+                        Object controller = App.getController();
+                        if (controller instanceof EditQuestionnairePageController) {
+                            ((EditQuestionnairePageController) controller).setQuestionnaire((Questionnaire) questionnaireListView.getSelectionModel().getSelectedItem());
+                        }
+                    } catch (IOException e) {
+                        Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+                        alert.show();
+                    }
+                }
+            }
+        });
     }
 
     public void newQuestionnaireBtnClick() throws IOException {

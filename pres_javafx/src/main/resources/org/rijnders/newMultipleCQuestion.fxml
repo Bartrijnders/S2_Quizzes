@@ -9,11 +9,6 @@
     <userData>
         <fx:reference source="controller"/>
     </userData>
-    <properties>
-        <!--        <cont>-->
-        <!--            <fx:reference source="controller"/>-->
-        <!--        </cont>-->
-    </properties>
     <children>
         <VBox fx:id="anchorVBox" prefWidth="520.0"
               style="-fx-border-color: Grey; -fx-border-radius: 10px; -fx-border-width: 3px;">

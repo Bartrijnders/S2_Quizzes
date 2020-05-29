@@ -1,5 +1,7 @@
 package org.rijnders;
 
+import com.rijnders.entities.MultipleChoiceQuestion;
+import com.rijnders.entities.OpenQuestion;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entities.StandardQuestionnaire;
 import com.rijnders.entityinterfaces.Questionnaire;
@@ -9,28 +11,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import sevices.ActiveUserService;
 import sevices.QuestionnaireService;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class NewQuestionnairePageController implements Initializable {
 
+public class EditQuestionnairePageController implements Initializable {
     private final List<Group> groupList;
     private final QuestionnaireService questionnaireService;
     @FXML
     public TextField nameTextField;
     @FXML
-    public ListView listView;
+    public ListView<Group> listView;
     @FXML
     public Button saveBtn;
     @FXML
@@ -42,10 +39,16 @@ public class NewQuestionnairePageController implements Initializable {
     @FXML
     public Button deleteBtn;
 
+    @FXML
+    public Button deleteQuestionnaireBtn;
 
-    public NewQuestionnairePageController() {
+    public Questionnaire workQuestionnaire;
+
+
+    public EditQuestionnairePageController() {
         this.groupList = new ArrayList<>();
         questionnaireService = new QuestionnaireService();
+        this.workQuestionnaire = null;
     }
 
     @Override
@@ -56,6 +59,35 @@ public class NewQuestionnairePageController implements Initializable {
                 deleteBtn.setDisable(listView.getSelectionModel().getSelectedItem() == null);
             }
         });
+    }
+
+    public void setQuestionnaire(Questionnaire questionnaire) throws IOException {
+        this.workQuestionnaire = questionnaire;
+        fillIn();
+    }
+
+    public void fillIn() throws IOException {
+        nameTextField.setText(workQuestionnaire.getName());
+        for (StandardQuestion question : workQuestionnaire.getQuestions()) {
+            if (question instanceof MultipleChoiceQuestion) {
+                Group group = FXMLLoader.load(getClass().getResource("newMultipleCQuestion.fxml"));
+                listView.getItems().add(group);
+                groupList.add(group);
+                Object controller = group.getUserData();
+                if (controller instanceof NewMultipleCQuestionController) {
+                    ((NewMultipleCQuestionController) controller).fillIn((MultipleChoiceQuestion) question);
+                }
+            }
+            if (question instanceof OpenQuestion) {
+                Group group = FXMLLoader.load(getClass().getResource("newOpenQuestionControl.fxml"));
+                listView.getItems().add(group);
+                groupList.add(group);
+                Object controller = group.getUserData();
+                if (controller instanceof OpenQuestionControlController) {
+                    ((OpenQuestionControlController) controller).fillIn((OpenQuestion) question);
+                }
+            }
+        }
     }
 
     public void backBtnClick() {
@@ -78,7 +110,9 @@ public class NewQuestionnairePageController implements Initializable {
         groupList.add(group);
     }
 
-    public void saveButtonClick() throws IOException, SQLException {
+    public void updateButtonClick() throws IOException, SQLException {
+        UUID toUseId = workQuestionnaire.getId();
+        questionnaireService.delete(workQuestionnaire);
         boolean proceed = missingContentCheck();
         if (!proceed) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -87,10 +121,9 @@ public class NewQuestionnairePageController implements Initializable {
             alert.show();
         } else {
             List<StandardQuestion> questions = new ArrayList<>();
-            Questionnaire questionnaire = new StandardQuestionnaire(nameTextField.getText(), ActiveUserService.getInstance().getUser());
+            Questionnaire questionnaire = new StandardQuestionnaire(toUseId, nameTextField.getText(), ActiveUserService.getInstance().getUser());
             for (Group node : groupList) {
-                Object controller = null;
-                controller = node.getUserData();
+                Object controller = node.getUserData();
                 if (controller instanceof CreateAble) {
                     questions.add(((CreateAble<StandardQuestion, Questionnaire>) controller).create(questionnaire));
                 }
@@ -98,8 +131,6 @@ public class NewQuestionnairePageController implements Initializable {
             questionnaire.getQuestions().addAll(questions);
             questionnaireService.save(questionnaire);
             App.setRoot("questionnaireHome");
-
-
         }
     }
 
@@ -123,8 +154,28 @@ public class NewQuestionnairePageController implements Initializable {
     }
 
     public void setDeleteBtn() {
-        Group group = (Group) listView.getSelectionModel().getSelectedItem();
+        Group group = listView.getSelectionModel().getSelectedItem();
         groupList.remove(group);
         listView.getItems().remove(group);
     }
+
+    public void setDeleteQuestionnaireBtn() throws SQLException, IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Are you sure?");
+        alert.setContentText("You're about to delete this questionnaire. Are you sure?");
+        ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.NO);
+        ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        alert.getButtonTypes().setAll(noBtn, yesBtn);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == yesBtn) {
+            questionnaireService.delete(workQuestionnaire);
+            App.setRoot("questionnaireHome");
+        }
+
+
+    }
 }
+
+
+

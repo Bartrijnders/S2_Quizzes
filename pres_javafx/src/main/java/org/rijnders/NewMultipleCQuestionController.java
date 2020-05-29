@@ -43,10 +43,17 @@ public class NewMultipleCQuestionController extends Group implements Initializab
     @FXML
     public GridPane anchorGridPane;
 
+    private List<TextField> textFields;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //not used anymore
+        textFields = new ArrayList<>();
+        for (Node field : anchorGridPane.getChildren()) {
+            if (field instanceof TextField) {
+                textFields.add((TextField) field);
+            }
+        }
     }
 
     @Override
@@ -85,5 +92,22 @@ public class NewMultipleCQuestionController extends Group implements Initializab
         } else {
             return null;
         }
+    }
+
+    public void fillIn(MultipleChoiceQuestion question) {
+        answerATextField.setText(question.getAnswers().get(0).getAnswerLine());
+        answerARadioButton.setSelected(question.getAnswers().get(0).isCorrect());
+
+        answerBTextField.setText(question.getAnswers().get(1).getAnswerLine());
+        answerBRadioButton.setSelected(question.getAnswers().get(1).isCorrect());
+
+        answerCTextField.setText(question.getAnswers().get(2).getAnswerLine());
+        answerCRadioButton.setSelected(question.getAnswers().get(2).isCorrect());
+
+        answerDTextField.setText(question.getAnswers().get(3).getAnswerLine());
+        answerDRadioButton.setSelected(question.getAnswers().get(3).isCorrect());
+
+        questionTextField.setText(question.getQuestionLine());
+
     }
 }
