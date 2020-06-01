@@ -12,8 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.*;
-import sevices.ActiveUserService;
-import sevices.QuestionnaireService;
+import session.SessionAble;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,9 +20,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 
-public class EditQuestionnairePageController implements Initializable {
+public class EditQuestionnairePageController implements Initializable, SetSessionAble {
     private final List<Group> groupList;
-    private final QuestionnaireService questionnaireService;
     @FXML
     public TextField nameTextField;
     @FXML
@@ -44,10 +42,11 @@ public class EditQuestionnairePageController implements Initializable {
 
     public Questionnaire workQuestionnaire;
 
+    public SessionAble session;
+
 
     public EditQuestionnairePageController() {
         this.groupList = new ArrayList<>();
-        questionnaireService = new QuestionnaireService();
         this.workQuestionnaire = null;
     }
 
@@ -93,8 +92,12 @@ public class EditQuestionnairePageController implements Initializable {
     public void backBtnClick() {
         try {
             App.setRoot("questionnaireHome");
+            SetSessionAble cont = (SetSessionAble) App.getController();
+            assert cont != null;
+            cont.setSession(session);
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+            alert.showAndWait();
         }
     }
 
@@ -112,7 +115,7 @@ public class EditQuestionnairePageController implements Initializable {
 
     public void updateButtonClick() throws IOException, SQLException {
         UUID toUseId = workQuestionnaire.getId();
-        questionnaireService.delete(workQuestionnaire);
+        session.getQuestionnaireService().delete(workQuestionnaire);
         boolean proceed = missingContentCheck();
         if (!proceed) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -121,7 +124,7 @@ public class EditQuestionnairePageController implements Initializable {
             alert.show();
         } else {
             List<StandardQuestion> questions = new ArrayList<>();
-            Questionnaire questionnaire = new StandardQuestionnaire(toUseId, nameTextField.getText(), ActiveUserService.getInstance().getUser());
+            Questionnaire questionnaire = new StandardQuestionnaire(toUseId, nameTextField.getText(), session.getActiveUserService().getUser());
             for (Group node : groupList) {
                 Object controller = node.getUserData();
                 if (controller instanceof CreateAble) {
@@ -129,8 +132,10 @@ public class EditQuestionnairePageController implements Initializable {
                 }
             }
             questionnaire.getQuestions().addAll(questions);
-            questionnaireService.save(questionnaire);
+            session.getQuestionnaireService().save(questionnaire);
             App.setRoot("questionnaireHome");
+            SetSessionAble controller = (SetSessionAble) App.getController();
+            controller.setSession(session);
         }
     }
 
@@ -159,6 +164,11 @@ public class EditQuestionnairePageController implements Initializable {
         listView.getItems().remove(group);
     }
 
+    @Override
+    public void setSession(SessionAble session) {
+        this.session = session;
+    }
+
     public void setDeleteQuestionnaireBtn() throws SQLException, IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Are you sure?");
@@ -167,10 +177,11 @@ public class EditQuestionnairePageController implements Initializable {
         ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.YES);
         alert.getButtonTypes().setAll(noBtn, yesBtn);
         Optional<ButtonType> result = alert.showAndWait();
-
         if (result.get() == yesBtn) {
-            questionnaireService.delete(workQuestionnaire);
+            session.getQuestionnaireService().delete(workQuestionnaire);
             App.setRoot("questionnaireHome");
+            SetSessionAble controller = (SetSessionAble) App.getController();
+            controller.setSession(session);
         }
 
 

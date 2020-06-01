@@ -1,11 +1,13 @@
 package org.rijnders;
 
 import com.rijnders.entityinterfaces.User;
+import factories.Factory;
+import factories.SessionFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import sevices.ActiveUserService;
+import session.SessionAble;
 import sevices.LoginService;
 
 import java.io.IOException;
@@ -19,20 +21,23 @@ public class LoginController {
 
     @FXML
     public void loginBtnClick() {
-        try{
+        try {
+            Factory<SessionAble> sessionFactory = new SessionFactory();
+            SessionAble session = sessionFactory.Create();
             LoginService loginService = new LoginService();
             User user = loginService.loginWithEmail(emailTxtF.getText(), passwordPswrdF.getText());
-            if(user == null){
+            if (user == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText("Email or password is incorrect. try again.");
                 alert.show();
+            } else {
+                session.getActiveUserService().setUser(user);
+                session.getActiveQuestionnaireService().setQCollection(session.getQuestionnaireService().getAllUsersQuestionnaires(session.getActiveUserService().getUser()));
+                App.setRoot("home");
+                Object cont = App.getController();
+                if (cont instanceof HomeController)
+                    ((HomeController) cont).setSession(session);
             }
-            else {
-                ActiveUserService activeUserService = ActiveUserService.getInstance();
-                activeUserService.setUser(user);
-
-                    App.setRoot("home");
-                }
 
 
             }

@@ -13,8 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import sevices.ActiveUserService;
-import sevices.QuestionnaireService;
+import session.SessionAble;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class NewQuestionnairePageController implements Initializable {
+public class NewQuestionnairePageController implements Initializable, SetSessionAble {
 
     private final List<Group> groupList;
-    private final QuestionnaireService questionnaireService;
     @FXML
     public TextField nameTextField;
     @FXML
-    public ListView listView;
+    public ListView<Group> listView;
     @FXML
     public Button saveBtn;
     @FXML
@@ -41,11 +39,11 @@ public class NewQuestionnairePageController implements Initializable {
     public Button addMultipleChoiceBtn;
     @FXML
     public Button deleteBtn;
+    private SessionAble session;
 
 
     public NewQuestionnairePageController() {
         this.groupList = new ArrayList<>();
-        questionnaireService = new QuestionnaireService();
     }
 
     @Override
@@ -61,8 +59,12 @@ public class NewQuestionnairePageController implements Initializable {
     public void backBtnClick() {
         try {
             App.setRoot("questionnaireHome");
+            SetSessionAble cont = (SetSessionAble) App.getController();
+            assert cont != null;
+            cont.setSession(session);
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+            alert.showAndWait();
         }
     }
 
@@ -82,12 +84,12 @@ public class NewQuestionnairePageController implements Initializable {
         boolean proceed = missingContentCheck();
         if (!proceed) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Not all requered fields are filled in!");
-            alert.setContentText("Pleas fill in the red textboxes");
+            alert.setHeaderText("Not all required fields are filled in!");
+            alert.setContentText("Pleas fill in the red text boxes");
             alert.show();
         } else {
             List<StandardQuestion> questions = new ArrayList<>();
-            Questionnaire questionnaire = new StandardQuestionnaire(nameTextField.getText(), ActiveUserService.getInstance().getUser());
+            Questionnaire questionnaire = new StandardQuestionnaire(nameTextField.getText(), session.getActiveUserService().getUser());
             for (Group node : groupList) {
                 Object controller = null;
                 controller = node.getUserData();
@@ -96,8 +98,12 @@ public class NewQuestionnairePageController implements Initializable {
                 }
             }
             questionnaire.getQuestions().addAll(questions);
-            questionnaireService.save(questionnaire);
+            session.getQuestionnaireService().save(questionnaire);
+            session.getActiveQuestionnaireService().getQCollection().add(questionnaire);
             App.setRoot("questionnaireHome");
+            SetSessionAble cont = (SetSessionAble) App.getController();
+            assert cont != null;
+            cont.setSession(session);
 
 
         }
@@ -123,8 +129,13 @@ public class NewQuestionnairePageController implements Initializable {
     }
 
     public void setDeleteBtn() {
-        Group group = (Group) listView.getSelectionModel().getSelectedItem();
+        Group group = listView.getSelectionModel().getSelectedItem();
         groupList.remove(group);
         listView.getItems().remove(group);
+    }
+
+    @Override
+    public void setSession(SessionAble session) {
+        this.session = session;
     }
 }

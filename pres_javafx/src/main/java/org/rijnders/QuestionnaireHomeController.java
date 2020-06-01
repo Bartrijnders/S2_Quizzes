@@ -1,7 +1,6 @@
 package org.rijnders;
 
 import com.rijnders.entityinterfaces.Questionnaire;
-import com.rijnders.entityinterfaces.User;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,52 +8,32 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import sevices.ActiveUserService;
-import sevices.QuestionnaireService;
+import session.SessionAble;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class QuestionnaireHomeController implements Initializable {
+public class QuestionnaireHomeController implements Initializable, SetSessionAble {
 
     @FXML
     public ListView<Object> questionnaireListView;
     @FXML
     public Button newQuestionnaireBtn;
-    private List<Questionnaire> questionnaireList;
+    private SessionAble session;
 
-    public QuestionnaireHomeController() {
-        User activeUser = ActiveUserService.getInstance().getUser();
-        QuestionnaireService questionnaireService = new QuestionnaireService();
-        try {
-            questionnaireList = questionnaireService.getAllUsersQuestionnaires(activeUser);
-        } catch (SQLException exception) {
-            Alert alert = ExceptionAlert.getInstance().newSQLAlert(exception);
-            alert.show();
-        }
-
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (!questionnaireList.isEmpty()) {
-            for (Questionnaire questionnaire : questionnaireList) {
-                questionnaireListView.getItems().add(questionnaire);
-            }
-        } else {
-            questionnaireListView.getItems().add("no questionnaires found");
-        }
 
         questionnaireListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (mouseEvent.getClickCount() == 2) {
+                if (mouseEvent.getClickCount() == 2 && !questionnaireListView.getSelectionModel().isEmpty()) {
                     try {
                         App.setRoot("editQuestionnairePage");
-                        Object controller = App.getController();
+                        SetSessionAble controller = (SetSessionAble) App.getController();
+                        controller.setSession(session);
                         if (controller instanceof EditQuestionnairePageController) {
                             ((EditQuestionnairePageController) controller).setQuestionnaire((Questionnaire) questionnaireListView.getSelectionModel().getSelectedItem());
                         }
@@ -68,10 +47,31 @@ public class QuestionnaireHomeController implements Initializable {
     }
 
     public void newQuestionnaireBtnClick() throws IOException {
-        App.setRoot("newQuestionnairePage");
+        try {
+            App.setRoot("newQuestionnairePage");
+            SetSessionAble cont = (SetSessionAble) App.getController();
+            cont.setSession(session);
+
+        } catch (IOException e) {
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+            alert.show();
+        }
     }
 
     public void backBtnClick() throws IOException {
         App.setRoot("home");
     }
+
+    @Override
+    public void setSession(SessionAble session) {
+        this.session = session;
+        if (!session.getActiveQuestionnaireService().getQCollection().isEmpty()) {
+            for (Questionnaire questionnaire : session.getActiveQuestionnaireService().getQCollection()) {
+                questionnaireListView.getItems().add(questionnaire);
+            }
+        } else {
+            questionnaireListView.getItems().add("no questionnaires found");
+        }
+    }
+
 }

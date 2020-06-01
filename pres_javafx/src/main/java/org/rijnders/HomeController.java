@@ -1,47 +1,56 @@
 package org.rijnders;
 
-import com.rijnders.entityinterfaces.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import sevices.ActiveUserService;
+import session.SessionAble;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, SetSessionAble {
 
-    ActiveUserService activeUserService = ActiveUserService.getInstance();
-    private User activeUser = activeUserService.getUser();
 
-    @FXML public Text welcomeTxt;
-    @FXML public Button myQuestionnaireBtn;
-    @FXML public Button playQuizBtn;
+    @FXML
+    public Text welcomeTxt;
+    @FXML
+    public Button myQuestionnaireBtn;
+    @FXML
+    public Button playQuizBtn;
+    private SessionAble session;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setWelcomeTxt();
     }
 
     private void setWelcomeTxt(){
-        welcomeTxt.setText("Welcome " + activeUser.getUserName());
+        welcomeTxt.setText("Welcome " + session.getActiveUserService().getUser().getUserName());
     }
 
     @FXML
     public void setMyQuestionnaireBtnClick(){
-        try{
+        try {
             App.setRoot("questionnaireHome");
+            SetSessionAble cont = (SetSessionAble) App.getController();
+            cont.setSession(session);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+            alert.show();
         }
 
     }
 
-    public void setPlayQuizBtnClick(){
-
+    public void setPlayQuizBtnClick() {
+        // to quiz part of the app
     }
 
-
+    @Override
+    public void setSession(SessionAble session) {
+        this.session = session;
+        setWelcomeTxt();
+    }
 }
