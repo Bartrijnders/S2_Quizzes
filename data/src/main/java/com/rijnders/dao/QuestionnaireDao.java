@@ -4,7 +4,7 @@ import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entityinterfaces.Questionnaire;
-import com.rijnders.resultconvertors.ResultToQuestinnaireConverter;
+import com.rijnders.resultconvertors.ResultToQuestionnaireConverter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ public class QuestionnaireDao implements Dao<Questionnaire>, DaoByParent<List<Qu
     private final String selectEverything = "SELECT * ";
     private Dao<StandardQuestion> questionDao;
 
-    public QuestionnaireDao() {
+    public QuestionnaireDao() throws SQLException {
         connection = new PostgresConnectionSetup().connect();
         preparedStatement = null;
         resultSet = null;
@@ -43,7 +43,7 @@ public class QuestionnaireDao implements Dao<Questionnaire>, DaoByParent<List<Qu
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             if(resultSet.next()){
-               return ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet);
+                return ResultToQuestionnaireConverter.getInstance().convertToStandard(resultSet);
             }
             return null;
         }
@@ -66,7 +66,7 @@ public class QuestionnaireDao implements Dao<Questionnaire>, DaoByParent<List<Qu
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while (resultSet.next()) {
-                questionnaires.add(ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet));
+                questionnaires.add(ResultToQuestionnaireConverter.getInstance().convertToStandard(resultSet));
             }
             return questionnaires;
         }
@@ -164,7 +164,7 @@ public class QuestionnaireDao implements Dao<Questionnaire>, DaoByParent<List<Qu
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while (resultSet.next()){
-               questionnaires.add(ResultToQuestinnaireConverter.getInstance().convertToStandard(resultSet));
+                questionnaires.add(ResultToQuestionnaireConverter.getInstance().convertToStandard(resultSet));
             }
             return questionnaires;
         }

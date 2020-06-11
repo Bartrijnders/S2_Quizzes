@@ -1,4 +1,4 @@
 package session;
 
-public interface SessionAble extends ActiveUserServiceAble, ActiveQuestionaireServiceAble, QuestionnaireServiceAble {
+public interface SessionAble extends ActiveUserServiceAble, ActiveQuestionnaireServiceAble {
 }

@@ -2,6 +2,7 @@ package com.rijnders.dbconnection;
 
 public class ConnectionValues {
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String url = "jdbc:postgresql://localhost:5432/qprojectdb";
     private static final String user = "postgres";
     private static final String password = "password";

@@ -44,19 +44,19 @@
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Your Questinnaires:" textAlignment="CENTER">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets top="5.0" />
-                     </VBox.margin>
-                  </Text>
-                  <ListView fx:id="questionnaireListView">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </ListView>
+                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Your Questionnaires:" textAlignment="CENTER">
+                       <font>
+                           <Font size="18.0"/>
+                       </font>
+                       <VBox.margin>
+                           <Insets top="5.0"/>
+                       </VBox.margin>
+                   </Text>
+                   <ListView fx:id="questionnaireListView">
+                       <VBox.margin>
+                           <Insets top="10.0"/>
+                       </VBox.margin>
+                   </ListView>
                </children>
             </VBox>
          </children>

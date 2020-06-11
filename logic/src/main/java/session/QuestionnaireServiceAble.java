@@ -1,9 +1,9 @@
 package session;
 
-import sevices.QuestionnaireService;
+import sevices.QuestionnaireGetAllByUserService;
 
 public interface QuestionnaireServiceAble {
-    QuestionnaireService getQuestionnaireService();
+    QuestionnaireGetAllByUserService getQuestionnaireService();
 
-    void setQuestionnaireService(QuestionnaireService questionnaireService);
+    void setQuestionnaireService(QuestionnaireGetAllByUserService questionnaireGetAllByUserService);
 }

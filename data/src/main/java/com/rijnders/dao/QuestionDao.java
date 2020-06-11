@@ -6,7 +6,7 @@ import com.rijnders.entities.MultipleChoiceQuestion;
 import com.rijnders.entities.OpenQuestion;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entityinterfaces.Answer;
-import com.rijnders.resultconvertors.ResultToQuestionConvertor;
+import com.rijnders.resultconvertors.ResultToQuestionConverter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
-    public QuestionDao() {
+    public QuestionDao() throws SQLException {
         this.connection = new PostgresConnectionSetup().connect();
     }
 
@@ -38,7 +38,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             if(resultSet.next()){
-                return ResultToQuestionConvertor.getInstance().convert(resultSet);
+                return ResultToQuestionConverter.getInstance().convert(resultSet);
             }
             return null;
         }
@@ -59,14 +59,13 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while(resultSet.next()){
-                questions.add(ResultToQuestionConvertor.getInstance().convert(resultSet));
+                questions.add(ResultToQuestionConverter.getInstance().convert(resultSet));
             }
             return questions;
         }
         finally {
             ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
         }
-
     }
 
     @Override
@@ -80,7 +79,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
                     "VALUES (?, ?, ?, ?);";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setObject(1, question.getId());
-            preparedStatement.setObject(2, question.getQuestionnairId());
+            preparedStatement.setObject(2, question.getQuestionnaireId());
             preparedStatement.setString(3, question.getQuestionLine());
             preparedStatement.setString(4, question.getType().toString());
             preparedStatement.executeUpdate();
@@ -105,9 +104,10 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             connection = new PostgresConnectionSetup().connect();
             connection.setAutoCommit(false);
             String sql = "" +
-                    "UPDATE question SET questionline=?";
+                    "UPDATE question SET questionline=? WHERE questionid = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, question.getQuestionLine());
+            preparedStatement.setObject(2, question.getId());
             preparedStatement.executeUpdate();
             connection.commit();
             AnswerDao answerDao = new AnswerDao();
@@ -164,7 +164,7 @@ public class QuestionDao implements DaoByParent<List<StandardQuestion>>, Dao<Sta
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while(resultSet.next()){
-                questions.add(ResultToQuestionConvertor.getInstance().convert(resultSet));
+                questions.add(ResultToQuestionConverter.getInstance().convert(resultSet));
             }
             return questions;
         }

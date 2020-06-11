@@ -12,7 +12,7 @@
             AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
             AnchorPane.topAnchor="0.0">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Questionnair" textAlignment="CENTER">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Questionnaire" textAlignment="CENTER">
                <font>
                   <Font size="20.0"/>
                </font>

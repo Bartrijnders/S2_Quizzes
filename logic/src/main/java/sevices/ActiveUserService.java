@@ -1,7 +1,9 @@
 package sevices;
 
 import com.rijnders.entityinterfaces.User;
-public final class ActiveUserService {
+import session.ActiveUserManageAble;
+
+public final class ActiveUserService implements ActiveUserManageAble {
 
     private User user;
 

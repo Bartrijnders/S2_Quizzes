@@ -1,7 +1,5 @@
 package org.rijnders;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -9,8 +7,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import messages.RegisteryCheckMessage;
+import messages.RegistryCheckMessageAble;
 import sevices.RegisterService;
+import sevices.RegisterServiceAble;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,16 +20,28 @@ import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
 
-    private final RegisterService registerService;
-    @FXML public TextField usernameTxt;
-    @FXML public TextField emailTxt;
-    @FXML public PasswordField passwordTxt;
-    @FXML public PasswordField repasswordPswdF;
-    @FXML public Button confirmBtn;
-    List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
+    @FXML
+    public TextField usernameTxt;
+    @FXML
+    public TextField emailTxt;
+    @FXML
+    public PasswordField passwordTxt;
+    @SuppressWarnings("SpellCheckingInspection")
+    @FXML
+    public PasswordField repasswordPswdF;
+    @FXML
+    public Button confirmBtn;
+    private RegisterServiceAble registerService;
 
     public RegisterController() {
-        this.registerService = new RegisterService();
+        try {
+            this.registerService = new RegisterService();
+        } catch (SQLException sqlException) {
+            Alert alert = ExceptionAlert.getInstance().newSQLAlert(sqlException);
+            alert.showAndWait();
+        }
+
     }
 
     @Override
@@ -39,13 +50,10 @@ public class RegisterController implements Initializable {
         nodes.add(emailTxt);
         nodes.add(passwordTxt);
         nodes.add(repasswordPswdF);
-        for(Node node : nodes){
-            node.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldPropertyValue, Boolean newPropertyValue) {
-                    if(Boolean.TRUE.equals(newPropertyValue)) {
-                       checkFilledIn();
-                    }
+        for (Node node : nodes) {
+            node.focusedProperty().addListener((observableValue, oldPropertyValue, newPropertyValue) -> {
+                if (Boolean.TRUE.equals(newPropertyValue)) {
+                    checkFilledIn();
                 }
             });
         }
@@ -54,7 +62,7 @@ public class RegisterController implements Initializable {
 
     @FXML
     public void cancelBtnClick() throws IOException {
-        App.setRoot("login");
+        App.setRoot(FileNameHandler.LOGIN);
     }
 
     @FXML
@@ -74,9 +82,9 @@ public class RegisterController implements Initializable {
     }
 
     @FXML
-    public void confirmBtnClick(){
+    public void confirmBtnClick() {
         try {
-            RegisteryCheckMessage result = registerService.register(usernameTxt.getText(), emailTxt.getText(), passwordTxt.getText());
+            RegistryCheckMessageAble result = registerService.register(usernameTxt.getText(), emailTxt.getText(), passwordTxt.getText());
 
             String style = "-fx-text-fill: red; -fx-border-color: #ff0000";
 
@@ -99,16 +107,15 @@ public class RegisterController implements Initializable {
             } else {
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setHeaderText("new account created. please log in");
-                a.show();
-                try {
-                    App.setRoot("login");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                a.showAndWait();
+                App.setRoot(FileNameHandler.LOGIN);
             }
-        }
-        catch (SQLException exception){
-            ExceptionAlert.getInstance().newSQLAlert(exception);
+        } catch (SQLException exception) {
+            Alert alert = ExceptionAlert.getInstance().newSQLAlert(exception);
+            alert.showAndWait();
+        } catch (IOException e) {
+            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
+            alert.showAndWait();
         }
     }
 }

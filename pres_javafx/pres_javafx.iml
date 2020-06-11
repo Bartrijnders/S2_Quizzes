@@ -22,5 +22,6 @@
     <orderEntry type="module" module-name="data" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.12" level="project" />
     <orderEntry type="module" module-name="domain" />
+    <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.10.10" level="project" />
   </component>
 </module>

@@ -1,31 +1,34 @@
 package session;
 
+import com.rijnders.entityinterfaces.Questionnaire;
+import com.rijnders.entityinterfaces.User;
 import factories.ActiveQuestionnaireServiceFactory;
 import factories.ActiveUserServiceFactory;
 import factories.Factory;
-import factories.QuestionnaireSeviceFactory;
 import sevices.ActiveUserService;
-import sevices.QuestionnaireService;
+import sevices.GetByValueService;
+import sevices.QuestionnaireGetAllByUserService;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class QuizzesSession implements SessionAble {
 
     private ActiveUserService activeUserService;
     private QuestionnaireCollectionManageAble activeQuestionnaireCollectionService;
-    private QuestionnaireService questionnaireService;
 
-    public QuizzesSession() {
+    public QuizzesSession(User user) throws SQLException {
         Factory<QuestionnaireCollectionManageAble> qCollectionFactory = new ActiveQuestionnaireServiceFactory();
         activeQuestionnaireCollectionService = qCollectionFactory.Create();
         Factory<ActiveUserService> userServiceFactory = new ActiveUserServiceFactory();
         activeUserService = userServiceFactory.Create();
-        Factory<QuestionnaireService> questionnaireServiceFactory = new QuestionnaireSeviceFactory();
-        questionnaireService = questionnaireServiceFactory.Create();
-
+        GetByValueService<User, List<Questionnaire>> getByValueService = new QuestionnaireGetAllByUserService();
+        activeUserService.setUser(user);
+        getActiveQuestionnaireService().setQCollection(getByValueService.getByValue(user));
     }
 
     @Override
     public ActiveUserService getActiveUserService() {
-
         return activeUserService;
     }
 
@@ -44,13 +47,4 @@ public class QuizzesSession implements SessionAble {
         this.activeQuestionnaireCollectionService = questionnaireService;
     }
 
-    @Override
-    public QuestionnaireService getQuestionnaireService() {
-        return questionnaireService;
-    }
-
-    @Override
-    public void setQuestionnaireService(QuestionnaireService questionnaireService) {
-        this.questionnaireService = questionnaireService;
-    }
 }

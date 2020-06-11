@@ -1,5 +1,6 @@
 package com.rijnders.entityinterfaces;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,7 +9,13 @@ public interface Quiz {
 
     List<Turn> getTurns();
 
-    Questionnaire getQuestionnair();
+    Questionnaire getQuestionnaire();
 
     UUID getId();
+
+    int getScore();
+
+    void setScore(int score);
+
+    OffsetDateTime getTime();
 }

@@ -1,17 +1,11 @@
 package org.rijnders;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import session.SessionAble;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class HomeController implements Initializable, SetSessionAble {
+public class HomeController implements SetSessionAble {
 
 
     @FXML
@@ -22,30 +16,20 @@ public class HomeController implements Initializable, SetSessionAble {
     public Button playQuizBtn;
     private SessionAble session;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
 
     private void setWelcomeTxt(){
         welcomeTxt.setText("Welcome " + session.getActiveUserService().getUser().getUserName());
     }
 
     @FXML
-    public void setMyQuestionnaireBtnClick(){
-        try {
-            App.setRoot("questionnaireHome");
-            SetSessionAble cont = (SetSessionAble) App.getController();
-            cont.setSession(session);
-
-        } catch (IOException e) {
-            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
-            alert.show();
-        }
-
+    public void setMyQuestionnaireBtnClick() {
+        SceneSwitchAble sceneSwitchAble = new SceneSwitcher();
+        sceneSwitchAble.switchTo(session, FileNameHandler.QUESTIONNAIRE_HOME);
     }
 
     public void setPlayQuizBtnClick() {
-        // to quiz part of the app
+        SceneSwitchAble switcher = new SceneSwitcher();
+        switcher.switchTo(session, FileNameHandler.PLAY_HOME);
     }
 
     @Override

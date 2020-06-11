@@ -3,7 +3,7 @@ package com.rijnders.dao;
 import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entityinterfaces.Answer;
-import com.rijnders.resultconvertors.ResultToAnswerConvertor;
+import com.rijnders.resultconvertors.ResultToAnswerConverter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
     private ResultSet resultSet;
     private Connection connection;
 
-    public AnswerDao() {
+    public AnswerDao() throws SQLException {
         connection = new PostgresConnectionSetup().connect();
     }
 
@@ -38,7 +38,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             if(resultSet.next())
-                return ResultToAnswerConvertor.getInstance().convert(resultSet);
+                return ResultToAnswerConverter.getInstance().convert(resultSet);
             else
                 return null;
         }
@@ -60,7 +60,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while(resultSet.next()) {
-                answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+                answers.add(ResultToAnswerConverter.getInstance().convert(resultSet));
             }
             return answers;
         }
@@ -139,7 +139,7 @@ public class AnswerDao implements Dao<Answer>, DaoByParent<List<Answer>> {
             resultSet = preparedStatement.executeQuery();
             connection.commit();
             while (resultSet.next()){
-                answers.add(ResultToAnswerConvertor.getInstance().convert(resultSet));
+                answers.add(ResultToAnswerConverter.getInstance().convert(resultSet));
             }
             return answers;
         }

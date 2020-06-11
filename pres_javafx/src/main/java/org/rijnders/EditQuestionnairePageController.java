@@ -5,14 +5,16 @@ import com.rijnders.entities.OpenQuestion;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entities.StandardQuestionnaire;
 import com.rijnders.entityinterfaces.Questionnaire;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import session.SessionAble;
+import sevices.DeleteService;
+import sevices.QuestionnaireDeleteService;
+import sevices.QuestionnaireSaveService;
+import sevices.SaveService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,9 +42,9 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
     @FXML
     public Button deleteQuestionnaireBtn;
 
-    public Questionnaire workQuestionnaire;
+    private Questionnaire workQuestionnaire;
 
-    public SessionAble session;
+    private SessionAble session;
 
 
     public EditQuestionnairePageController() {
@@ -52,12 +54,8 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Group>() {
-            @Override
-            public void changed(ObservableValue<? extends Group> observableValue, Group group, Group t1) {
-                deleteBtn.setDisable(listView.getSelectionModel().getSelectedItem() == null);
-            }
-        });
+        listView.getSelectionModel().selectedItemProperty().addListener((
+                observableValue, group, t1) -> deleteBtn.setDisable(listView.getSelectionModel().getSelectedItem() == null));
     }
 
     public void setQuestionnaire(Questionnaire questionnaire) throws IOException {
@@ -90,15 +88,7 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
     }
 
     public void backBtnClick() {
-        try {
-            App.setRoot("questionnaireHome");
-            SetSessionAble cont = (SetSessionAble) App.getController();
-            assert cont != null;
-            cont.setSession(session);
-        } catch (IOException e) {
-            Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
-            alert.showAndWait();
-        }
+        NewQuestionnairePageController.nextScene(session);
     }
 
     public void newOpenBtnClick() throws IOException {
@@ -113,14 +103,16 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
         groupList.add(group);
     }
 
-    public void updateButtonClick() throws IOException, SQLException {
+    @SuppressWarnings("unchecked")
+    public void updateButtonClick() throws SQLException {
         UUID toUseId = workQuestionnaire.getId();
-        session.getQuestionnaireService().delete(workQuestionnaire);
+        DeleteService<Questionnaire, SessionAble> deleteService = new QuestionnaireDeleteService();
+        deleteService.delete(workQuestionnaire, session);
         boolean proceed = missingContentCheck();
         if (!proceed) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Not all requered fields are filled in!");
-            alert.setContentText("Pleas fill in the red textboxes");
+            alert.setHeaderText("Not all required fields are filled in!");
+            alert.setContentText("Pleas fill in the red text boxes");
             alert.show();
         } else {
             List<StandardQuestion> questions = new ArrayList<>();
@@ -132,10 +124,10 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
                 }
             }
             questionnaire.getQuestions().addAll(questions);
-            session.getQuestionnaireService().save(questionnaire);
-            App.setRoot("questionnaireHome");
-            SetSessionAble controller = (SetSessionAble) App.getController();
-            controller.setSession(session);
+            SaveService<Questionnaire, SessionAble> saveService = new QuestionnaireSaveService();
+            saveService.save(questionnaire, session);
+            SceneSwitchAble sceneSwitchAble = new SceneSwitcher();
+            sceneSwitchAble.switchTo(session, FileNameHandler.QUESTIONNAIRE_HOME);
         }
     }
 
@@ -146,8 +138,7 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
             nameTextField.setStyle("-fx-border-color: red;");
         }
         for (Group node : groupList) {
-            Object controller = null;
-            controller = node.getUserData();
+            Object controller = node.getUserData();
             if (controller instanceof ContentCheckAble) {
                 boolean check = ((ContentCheckAble) controller).check();
                 if (!check) {
@@ -169,7 +160,7 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
         this.session = session;
     }
 
-    public void setDeleteQuestionnaireBtn() throws SQLException, IOException {
+    public void setDeleteQuestionnaireBtn() throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Are you sure?");
         alert.setContentText("You're about to delete this questionnaire. Are you sure?");
@@ -177,11 +168,11 @@ public class EditQuestionnairePageController implements Initializable, SetSessio
         ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.YES);
         alert.getButtonTypes().setAll(noBtn, yesBtn);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == yesBtn) {
-            session.getQuestionnaireService().delete(workQuestionnaire);
-            App.setRoot("questionnaireHome");
-            SetSessionAble controller = (SetSessionAble) App.getController();
-            controller.setSession(session);
+        if (result.isPresent() && result.get() == yesBtn) {
+            QuestionnaireDeleteService deleteService = new QuestionnaireDeleteService();
+            deleteService.delete(workQuestionnaire, session);
+            SceneSwitchAble sceneSwitchAble = new SceneSwitcher();
+            sceneSwitchAble.switchTo(session, FileNameHandler.QUESTIONNAIRE_HOME);
         }
 
 

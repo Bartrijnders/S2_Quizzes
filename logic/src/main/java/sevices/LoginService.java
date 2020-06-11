@@ -5,19 +5,17 @@ import com.rijnders.entityinterfaces.User;
 
 import java.sql.SQLException;
 
-public class LoginService {
+public class LoginService implements LoginServiceAble {
 
 
-    public LoginService() {
-    }
+    @Override
     public User loginWithEmail(String email, String password) throws SQLException {
 
         UserDao userDao = new UserDao();
-        User comp = userDao.getByEmail(email);
-        if(comp != null && comp.getPassword().equals(password)){
-            return comp;
-        }
-        else{
+        User user = userDao.getByEmail(email);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        } else {
             return null;
         }
     }

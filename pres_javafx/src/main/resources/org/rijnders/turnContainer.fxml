@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPane" prefHeight="80.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8" fx:controller="org.rijnders.TurnContainer">
+   <userData>
+      <fx:reference source="controller"/>
+   </userData>
+   <children>
+      <VBox alignment="CENTER" layoutX="178.0" layoutY="-63.0" prefHeight="137.0" prefWidth="600.0"
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Question:">
+                     <font>
+                        <Font size="18.0"/>
+                     </font>
+                     <HBox.margin>
+                        <Insets right="10.0"/>
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="questionTxtField" alignment="CENTER" editable="false" prefHeight="27.0"
+                             prefWidth="454.0"/>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Correct:">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="13.0"/>
+                     </font>
+                  </Label>
+                  <TextField fx:id="correctTxtField" alignment="CENTER" editable="false" prefHeight="27.0"
+                             prefWidth="238.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                     </HBox.margin>
+                  </TextField>
+                  <Label text="You:">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="13.0"/>
+                     </font>
+                  </Label>
+                  <TextField fx:id="youTxtField" alignment="CENTER" editable="false" prefHeight="27.0"
+                             prefWidth="238.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

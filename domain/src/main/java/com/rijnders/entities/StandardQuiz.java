@@ -5,7 +5,7 @@ import com.rijnders.entityinterfaces.Quiz;
 import com.rijnders.entityinterfaces.Turn;
 import com.rijnders.entityinterfaces.User;
 
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,15 +16,17 @@ public class StandardQuiz implements Quiz {
     private final List<Turn> turns;
     private final Questionnaire questionnaire;
     private final UUID id;
-    private final LocalTime timeOfCreation;
+    private final OffsetDateTime dateTime;
+    private int score;
 
 
-    public StandardQuiz(User participant, List<Turn> turns, Questionnaire questionnaire, UUID id, LocalTime timeOfCreation) {
+    public StandardQuiz(User participant, List<Turn> turns, Questionnaire questionnaire, UUID id, OffsetDateTime timeOfCreation, int score) {
         this.participant = participant;
         this.turns = turns;
         this.questionnaire = questionnaire;
         this.id = id;
-        this.timeOfCreation = timeOfCreation;
+        this.score = score;
+        this.dateTime = timeOfCreation;
     }
 
     public StandardQuiz(User participant, Questionnaire questionnaire) {
@@ -32,12 +34,10 @@ public class StandardQuiz implements Quiz {
         this.questionnaire = questionnaire;
         this.id = UUID.randomUUID();
         this.turns = new ArrayList<>();
-        this.timeOfCreation = LocalTime.now();
+        score = 0;
+        this.dateTime = OffsetDateTime.now();
     }
 
-    public LocalTime getTimeOfCreation() {
-        return timeOfCreation;
-    }
 
     @Override
     public User getParticipant() {
@@ -50,12 +50,27 @@ public class StandardQuiz implements Quiz {
     }
 
     @Override
-    public Questionnaire getQuestionnair() {
+    public Questionnaire getQuestionnaire() {
         return questionnaire;
     }
 
     @Override
     public UUID getId() {
         return id;
+    }
+
+    @Override
+    public int getScore() {
+        return score;
+    }
+
+    @Override
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    @Override
+    public OffsetDateTime getTime() {
+        return dateTime;
     }
 }

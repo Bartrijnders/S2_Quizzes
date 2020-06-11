@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class StandardUser implements User {
 
-    private UUID userId;
+    private final UUID userId;
     private String userName;
     private String email;
     private String password;

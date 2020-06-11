@@ -33,4 +33,9 @@ public class OpenQuestion extends StandardQuestion implements answerGetAble<Answ
     public Answer getAnswers() {
         return getAnswer();
     }
+
+    @Override
+    public Answer getCorrectAnswer() {
+        return answer;
+    }
 }

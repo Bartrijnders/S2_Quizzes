@@ -3,7 +3,7 @@ package com.rijnders.dao;
 import com.rijnders.dbconnection.ConnCloser;
 import com.rijnders.dbconnection.PostgresConnectionSetup;
 import com.rijnders.entityinterfaces.User;
-import com.rijnders.resultconvertors.ResultToStandardUserConvertor;
+import com.rijnders.resultconvertors.ResultToStandardUserConverter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,11 +15,12 @@ import java.util.UUID;
 
 public class UserDao implements Dao<User>, DaoByString<User> {
 
-    private final Connection connection;
+    private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
     private final String selectEverything = "SELECT *";
-    public UserDao() {
+
+    public UserDao() throws SQLException {
         this.connection = new PostgresConnectionSetup().connect();
         preparedStatement = null;
         resultSet = null;
@@ -27,9 +28,9 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
 
     @Override
-    public User get(UUID id) throws SQLException{
+    public User get(UUID id) throws SQLException {
         try {
-
+            openConnecton();
             User output = null;
             String sql = "" +
                     selectEverything +
@@ -40,7 +41,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
             preparedStatement.setObject(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
-                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
+                output = ResultToStandardUserConverter.getInstance().convert(resultSet);
 
             connection.close();
             return output;
@@ -54,6 +55,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
     @Override
     public List<User> getAll() throws SQLException {
         try{
+            openConnecton();
             List<User> output = new ArrayList<>();
             String sql = "" +
                     selectEverything +
@@ -62,7 +64,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                output.add(ResultToStandardUserConvertor.getInstance().convert(resultSet));
+                output.add(ResultToStandardUserConverter.getInstance().convert(resultSet));
             }
             connection.close();
             return output;
@@ -76,6 +78,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
     @Override
     public void save(User user) throws SQLException {
         try{
+            openConnecton();
             connection.setAutoCommit(false);
             String sql = "" +
                     "INSERT INTO \"user\" " +
@@ -96,6 +99,7 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
     @Override
     public void update(User user) throws SQLException {
+        openConnecton();
         connection.setAutoCommit(false);
         String sql = "" +
                 "UPDATE \"user\" " +
@@ -113,16 +117,18 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
     @Override
     public void delete(User user) throws SQLException {
-        try{
-            connection.setAutoCommit(false);
-            String sql = "DELETE FROM \"user\" WHERE userid = ?";
+        try {
+            openConnecton();
+            if (user != null) {
+                connection.setAutoCommit(false);
+                String sql = "DELETE FROM \"user\" WHERE userid = ?";
 
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setObject(1, user.getUserId());
-            preparedStatement.executeUpdate();
-            connection.commit();
-        }
-        finally {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setObject(1, user.getUserId());
+                preparedStatement.executeUpdate();
+                connection.commit();
+            }
+        } finally {
             ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
         }
     }
@@ -130,38 +136,39 @@ public class UserDao implements Dao<User>, DaoByString<User> {
 
     @Override
     public User getByEmail(String email) throws SQLException {
+        openConnecton();
         User output = null;
         String sql = selectEverything +
                 "FROM \"user\" " +
                 "WHERE email = ?";
 
-        try{
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, email);
-            resultSet = preparedStatement.executeQuery();
-            if(resultSet.next())
-                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
-        }
-        finally {
-            ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
-        }
-        return output;
+        return fillAndExecute(email, output, sql);
     }
 
     @Override
     public User getByUsername(String username) throws SQLException {
-        User output = null;
+        openConnecton();
         String sql = selectEverything +
                 "FROM \"user\" " +
                 "WHERE username = ?";
-        try{
+        return fillAndExecute(username, null, sql);
+    }
+
+    private void openConnecton() throws SQLException {
+        if (connection.isClosed()) {
+            connection = new PostgresConnectionSetup().connect();
+        }
+    }
+
+    private User fillAndExecute(String username, User output, String sql) throws SQLException {
+        try {
+            openConnecton();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next())
-                output = ResultToStandardUserConvertor.getInstance().convert(resultSet);
-        }
-        finally {
+            if (resultSet.next())
+                output = ResultToStandardUserConverter.getInstance().convert(resultSet);
+        } finally {
             ConnCloser.getInstance().closeConnection(connection, preparedStatement, resultSet);
         }
         return output;

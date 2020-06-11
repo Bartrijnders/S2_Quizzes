@@ -3,8 +3,6 @@ package org.rijnders;
 import com.rijnders.entities.StandardQuestion;
 import com.rijnders.entities.StandardQuestionnaire;
 import com.rijnders.entityinterfaces.Questionnaire;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import session.SessionAble;
+import sevices.QuestionnaireSaveService;
+import sevices.SaveService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,17 +46,7 @@ public class NewQuestionnairePageController implements Initializable, SetSession
         this.groupList = new ArrayList<>();
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Group>() {
-            @Override
-            public void changed(ObservableValue<? extends Group> observableValue, Group group, Group t1) {
-                deleteBtn.setDisable(listView.getSelectionModel().getSelectedItem() == null);
-            }
-        });
-    }
-
-    public void backBtnClick() {
+    static void nextScene(SessionAble session) {
         try {
             App.setRoot("questionnaireHome");
             SetSessionAble cont = (SetSessionAble) App.getController();
@@ -65,22 +55,35 @@ public class NewQuestionnairePageController implements Initializable, SetSession
         } catch (IOException e) {
             Alert alert = ExceptionAlert.getInstance().newIOAlert(e);
             alert.showAndWait();
+        } catch (SQLException e) {
+            Alert alert = ExceptionAlert.getInstance().newSQLAlert(e);
+            alert.showAndWait();
         }
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        listView.getSelectionModel().selectedItemProperty().addListener((
+                observableValue, group, t1) -> deleteBtn.setDisable(listView.getSelectionModel().getSelectedItem() == null));
+    }
+
+    public void backBtnClick() {
+        nextScene(session);
+    }
+
     public void newOpenBtnClick() throws IOException {
-        Group group = FXMLLoader.load(getClass().getResource("newOpenQuestionControl.fxml"));
+        Group group = FXMLLoader.load(getClass().getResource(FileNameHandler.NEW_OPENQUESTION_CONTROL + ".fxml"));
         listView.getItems().add(group);
         groupList.add(group);
     }
 
     public void newMultipleCBtnClick() throws IOException {
-        Group group = FXMLLoader.load(getClass().getResource("newMultipleCQuestion.fxml"));
+        Group group = FXMLLoader.load(getClass().getResource(FileNameHandler.NEW_MULTIPLEC_QUESTION + ".fxml"));
         listView.getItems().add(group);
         groupList.add(group);
     }
 
-    public void saveButtonClick() throws IOException, SQLException {
+    public void saveButtonClick() throws SQLException {
         boolean proceed = missingContentCheck();
         if (!proceed) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -91,19 +94,16 @@ public class NewQuestionnairePageController implements Initializable, SetSession
             List<StandardQuestion> questions = new ArrayList<>();
             Questionnaire questionnaire = new StandardQuestionnaire(nameTextField.getText(), session.getActiveUserService().getUser());
             for (Group node : groupList) {
-                Object controller = null;
-                controller = node.getUserData();
+                Object controller = node.getUserData();
                 if (controller instanceof CreateAble) {
                     questions.add(((CreateAble<StandardQuestion, Questionnaire>) controller).create(questionnaire));
                 }
             }
             questionnaire.getQuestions().addAll(questions);
-            session.getQuestionnaireService().save(questionnaire);
-            session.getActiveQuestionnaireService().getQCollection().add(questionnaire);
-            App.setRoot("questionnaireHome");
-            SetSessionAble cont = (SetSessionAble) App.getController();
-            assert cont != null;
-            cont.setSession(session);
+            SaveService<Questionnaire, SessionAble> saveService = new QuestionnaireSaveService();
+            saveService.save(questionnaire, session);
+            SceneSwitchAble sceneSwitchAble = new SceneSwitcher();
+            sceneSwitchAble.switchTo(session, FileNameHandler.QUESTIONNAIRE_HOME);
 
 
         }
@@ -116,8 +116,7 @@ public class NewQuestionnairePageController implements Initializable, SetSession
             nameTextField.setStyle("-fx-border-color: red;");
         }
         for (Group node : groupList) {
-            Object controller = null;
-            controller = node.getUserData();
+            Object controller = node.getUserData();
             if (controller instanceof ContentCheckAble) {
                 boolean check = ((ContentCheckAble) controller).check();
                 if (!check) {
@@ -127,6 +126,7 @@ public class NewQuestionnairePageController implements Initializable, SetSession
         }
         return proceed;
     }
+
 
     public void setDeleteBtn() {
         Group group = listView.getSelectionModel().getSelectedItem();

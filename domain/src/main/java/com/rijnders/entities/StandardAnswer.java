@@ -25,6 +25,21 @@ public class StandardAnswer implements Answer {
         this.id = UUID.randomUUID();
     }
 
+    public StandardAnswer(String answerLine, boolean isCorrect) {
+        this.answerLine = answerLine;
+        this.isCorrect = isCorrect;
+        this.id = UUID.randomUUID();
+        questionId = null;
+    }
+
+    public StandardAnswer(UUID id, String answerLine, boolean isCorrect) {
+        this.answerLine = answerLine;
+        this.isCorrect = isCorrect;
+        this.id = id;
+        questionId = null;
+    }
+
+
     public String getAnswerLine() {
         return answerLine;
     }

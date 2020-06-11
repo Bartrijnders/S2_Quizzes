@@ -1,25 +1,31 @@
 package sevices;
 
-import messages.RegisteryCheckMessage;
+import messages.RegistryCheckMessageAble;
 
 import java.sql.SQLException;
 
-public class RegisterService {
+public class RegisterService implements RegisterServiceAble {
 
-    private final RegisterInputService registerInputService;
-    private final RegisterInsertService registerInsertService;
+    private final RegisterInputServiceAble registerInputServiceAble;
+    private final UserSaveServiceAble userSaveServiceAble;
 
-    public RegisterService() {
-        this.registerInputService = new RegisterInputService();
-        this.registerInsertService = new RegisterInsertService();
+    public RegisterService() throws SQLException {
+        this.registerInputServiceAble = new RegisterInputService();
+        this.userSaveServiceAble = new UserSaveService();
     }
 
-    public RegisteryCheckMessage register(String username, String email, String password) throws SQLException {
-        RegisteryCheckMessage check = registerInputService.checkInput(username, email);
-
-        if(check.getEmailIsUnique()&&check.getUsernameIsUnique()){
-            registerInsertService.registerNewUser(username,email,password);
+    @Override
+    public RegistryCheckMessageAble register(String username, String email, String password) throws SQLException {
+        RegistryCheckMessageAble check = getCheck(username, email);
+        if (check.getEmailIsUnique() && check.getUsernameIsUnique()) {
+            userSaveServiceAble.registerNewUser(username, email, password);
         }
         return check;
     }
+
+    protected RegistryCheckMessageAble getCheck(String username, String email) throws SQLException {
+        return registerInputServiceAble.checkInput(username, email);
+    }
+
+
 }

@@ -1,11 +1,12 @@
 package org.rijnders;
 
 import com.rijnders.entities.MultipleChoiceQuestion;
-import com.rijnders.entities.StandardAnswer;
-import com.rijnders.entityinterfaces.Answer;
 import com.rijnders.entityinterfaces.Questionnaire;
+import factories.AnswerFactory;
+import factories.AnswerFactoryAble;
+import factories.MultipleChoiceQuestionFactory;
+import factories.MultipleChoiceQuestionFactoryAble;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
@@ -13,12 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-public class NewMultipleCQuestionController extends Group implements Initializable, ContentCheckAble, CreateAble<MultipleChoiceQuestion, Questionnaire> {
+public class NewMultipleCQuestionController extends Group implements ContentCheckAble, CreateAble<MultipleChoiceQuestion, Questionnaire> {
 
     @FXML
     public TextField questionTextField;
@@ -43,18 +39,6 @@ public class NewMultipleCQuestionController extends Group implements Initializab
     @FXML
     public GridPane anchorGridPane;
 
-    private List<TextField> textFields;
-
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        textFields = new ArrayList<>();
-        for (Node field : anchorGridPane.getChildren()) {
-            if (field instanceof TextField) {
-                textFields.add((TextField) field);
-            }
-        }
-    }
 
     @Override
     public boolean check() {
@@ -81,14 +65,14 @@ public class NewMultipleCQuestionController extends Group implements Initializab
     @Override
     public MultipleChoiceQuestion create(Questionnaire questionnaire) {
         if (check()) {
-            List<Answer> answers = new ArrayList<>();
-            MultipleChoiceQuestion question = new MultipleChoiceQuestion(questionTextField.getText(), questionnaire.getId());
-            answers.add(new StandardAnswer(answerATextField.getText(), answerARadioButton.isSelected(), question.getId()));
-            answers.add(new StandardAnswer(answerBTextField.getText(), answerBRadioButton.isSelected(), question.getId()));
-            answers.add(new StandardAnswer(answerCTextField.getText(), answerCRadioButton.isSelected(), question.getId()));
-            answers.add(new StandardAnswer(answerDTextField.getText(), answerDRadioButton.isSelected(), question.getId()));
-            question.getAnswers().addAll(answers);
-            return question;
+            MultipleChoiceQuestionFactoryAble multipleChoiceQuestionFactoryAble = new MultipleChoiceQuestionFactory();
+            MultipleChoiceQuestion multipleChoiceQuestion = multipleChoiceQuestionFactoryAble.create(questionTextField.getText(), questionnaire.getId());
+            AnswerFactoryAble answerFactoryAble = new AnswerFactory();
+            multipleChoiceQuestion.getAnswers().add(answerFactoryAble.create(answerATextField.getText(), multipleChoiceQuestion.getId(), answerARadioButton.isSelected()));
+            multipleChoiceQuestion.getAnswers().add(answerFactoryAble.create(answerBTextField.getText(), multipleChoiceQuestion.getId(), answerBRadioButton.isSelected()));
+            multipleChoiceQuestion.getAnswers().add(answerFactoryAble.create(answerCTextField.getText(), multipleChoiceQuestion.getId(), answerCRadioButton.isSelected()));
+            multipleChoiceQuestion.getAnswers().add(answerFactoryAble.create(answerDTextField.getText(), multipleChoiceQuestion.getId(), answerDRadioButton.isSelected()));
+            return multipleChoiceQuestion;
         } else {
             return null;
         }

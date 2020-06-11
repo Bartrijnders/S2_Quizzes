@@ -1,12 +1,15 @@
 package factories;
 
+import com.rijnders.entityinterfaces.User;
 import session.QuizzesSession;
 import session.SessionAble;
 
-public class SessionFactory implements Factory<SessionAble> {
+import java.sql.SQLException;
+
+public class SessionFactory implements SessionFactoryAble {
 
     @Override
-    public SessionAble Create() {
-        return new QuizzesSession();
+    public SessionAble create(User user) throws SQLException {
+        return new QuizzesSession(user);
     }
 }

@@ -1,5 +1,7 @@
 package com.rijnders.entities;
 
+import com.rijnders.entityinterfaces.Answer;
+
 import java.util.UUID;
 
 public abstract class StandardQuestion {
@@ -7,18 +9,18 @@ public abstract class StandardQuestion {
     private String questionLine;
     private QuestionType type;
     private final UUID id;
-    private final UUID questionnairId;
+    private final UUID questionnaireId;
 
     public StandardQuestion(String questionLine, UUID id, UUID questionnaireId) {
         this.questionLine = questionLine;
         this.id = id;
-        this.questionnairId = questionnaireId;
+        this.questionnaireId = questionnaireId;
     }
 
     public StandardQuestion(String questionLine, UUID questionnaireId) {
         this.questionLine = questionLine;
         this.id = UUID.randomUUID();
-        this.questionnairId = questionnaireId;
+        this.questionnaireId = questionnaireId;
     }
 
     public String getQuestionLine() {
@@ -41,7 +43,9 @@ public abstract class StandardQuestion {
         this.type = type;
     }
 
-    public UUID getQuestionnairId() {
-        return questionnairId;
+    public UUID getQuestionnaireId() {
+        return questionnaireId;
     }
+
+    public abstract Answer getCorrectAnswer();
 }
